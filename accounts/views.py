@@ -164,6 +164,7 @@ def login_user(request):
         else:
             messages.error(request, 'Incorrect password')
             return redirect('/')
+    return render(request, 'accounts/login.html',)
 
 #edit profile
 '''@login_required

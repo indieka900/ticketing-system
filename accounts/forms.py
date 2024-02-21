@@ -10,7 +10,7 @@ class UserSignUpForm(forms.ModelForm):
             self.fields[field].widget.attrs.update({'class': 'form-control'})
     class Meta:
         model = MyUser
-        fields = ("username","email","phone","full_name","gender")
+        fields = ("username","email","phone","full_name")
 
     password1 = forms.CharField(
         label="Password", widget=forms.PasswordInput)
