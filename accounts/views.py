@@ -151,20 +151,17 @@ def login_user(request):
         try:
             user= MyUser.objects.get(email=email, reg_no=reg_no)
         except MyUser.DoesNotExist:
-            messages.error(request, 'email does not exist!') 
+            messages.error(request, 'email/registration number does not exist!') 
         user = authenticate(request, email=email, password=password)
         
         if user is not None:
-            if user.is_active:
-                login(request, user)
-                messages.success(request, 'Logged in succesfully')
-                return redirect('/')
-            else:
-                messages.error(request, 'Please activate your account')
-                return redirect('/') 
-        else:
-            messages.error(request, 'Incorrect password')
+            login(request, user)
+            # messages.success(request, 'Logged in succesfully')
             return redirect('/')
+        
+        else:
+            messages.error(request, 'Incorrect password or account is not activated')
+            return redirect(reverse('accounts:login'))
     return render(request, 'accounts/login.html',)
 
 #edit profile
