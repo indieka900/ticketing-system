@@ -6,6 +6,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 from accounts.models import MyUser
 # from rental_app.models import RoomType
 from django.views.generic import CreateView,View
@@ -25,17 +26,16 @@ class SignupView(CreateView):
     template_name = "accounts/sign_up.html"
 
     def get_context_data(self, **kwargs):
-        kwargs["user_type"] = "Landlord"
+        kwargs["user_type"] = "Student"
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
         if form.is_valid():
             user = form.save(commit=False)
-            user.role = self.request.POST.get('user_type')
             user.save()
                 
             # send_activation_email(user,self.request)
-            return redirect('/')
+            return redirect(reverse('accounts:login'))
             
         return render(self.request, "accounts/sign_alert.html")
 
@@ -146,9 +146,10 @@ def changePassword(request):
 def login_user(request):
     if request.method == 'POST':
         email = request.POST.get('email')
+        reg_no = request.POST.get('reg_no')
         password = request.POST.get('password')
         try:
-            user= MyUser.objects.get(email=email)
+            user= MyUser.objects.get(email=email, reg_no=reg_no)
         except MyUser.DoesNotExist:
             messages.error(request, 'email does not exist!') 
         user = authenticate(request, email=email, password=password)
