@@ -1,0 +1,112 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <link rel="stylesheet" href="{% static 'css1/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/jquery-3.7.0.js' %}"></script>
+    <link rel='stylesheet' href='https://unicons.iconscout.com/release/v4.0.0/css/line.css'>
+
+    s
+
+</head>
+
+<body>
+    <style>
+        .notification {
+            background-color: #555;
+            color: white;
+            text-decoration: none;
+            padding: 15px 26px;
+            position: relative;
+            display: inline-block;
+            border-radius: 2px;
+        }
+
+        .notification:hover {
+            background: red;
+        }
+
+        .notification .badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            padding: 5px 10px;
+            border-radius: 50%;
+            background: red;
+            color: white;
+        }
+    </style>
+
+    <body>
+        <nav>
+            <div class="logo-name">
+                <div class="logo-image">
+                    <img src="../commons/images/logo.png" alt="">
+                </div>
+
+                <!-- <span class="logo_name">Ministry of Information, Communications and The Digital Economy</span> -->
+                <span class="logo_name">M.o.I.C.D.E</span>
+            </div>
+            <title>SERVICE DESK-IT Ticketing-</title>
+            <div class="menu-items">
+                <ul class="tabs">
+                    <li><a href="#D0" class="active">
+                            <i class="uil uil-estate"></i>
+                            <span class="link-name">Dashboard</span>
+                        </a></li>
+                    <li><a href="#D2">
+                            <i class="uil uil-files-landscapes"></i>
+                            <span class="link-name">Tickets</span>
+                        </a></li>
+                    <li><a href="#D3">
+                            <i class="uil uil-files-landscapes"></i>
+                            <span class="link-name">Reports</span>
+                        </a></li>
+
+
+                </ul>
+
+                <ul class="logout-mode">
+                    <li><a href="../membership/logout.php">
+                            <i class="uil uil-signout"></i>
+                            <span class="link-name">Logout</span>
+                        </a></li>
+
+                    <li class="mode">
+                        <a href="javascript:void(0);">
+                            <i class="uil uil-moon"></i>
+                            <span class="link-name">Dark Mode</span>
+                        </a>
+
+                        <div class="mode-toggle">
+                            <span class="switch"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+
+        {% block body %}
+
+        {% endblock body %}
+        <footer>
+            <center>
+                <a href="http://www.ict.go.ke">Ministry of Information, Communications and The Digital Economy</a>
+                <P>Copyright &copy; 2019 -
+                    <script>document.write(new Date().getFullYear())</script>
+                </P>
+
+            </center>
+        </footer>
+    </body>
+
+    <script src="../commons/js/script.js"></script>
+    <script src="../commons/js/bootstrap.min.js"></script>
+    <script src="..//commons/js/scripts.js"></script>
+
+</html>
