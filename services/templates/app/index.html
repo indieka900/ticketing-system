@@ -71,17 +71,17 @@
                         <div class='box box1'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>TOTAL TICKETS</span>
-                            <span class='number'>$totalComplaints</span>
+                            <span class='number'>0</span>
                         </div>
                         <div class='box box2'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>SOLVED TICKETS</span>
-                            <span class='number'>$totalSolved</span>
+                            <span class='number'>0</span>
                         </div>
                         <div class='box box3'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>PENDING TICKETS</span>
-                            <span class='number'>$totalPending</span>
+                            <span class='number'>0</span>
                         </div>
                     </div>
                 </div>
@@ -207,22 +207,6 @@
 
             <div class="dash-content">
 
-                <!-- <?php
-
-                       $sqlQuery = "SELECT count(complaintid) as totalComplaints, 
-                       count(if(status=2,1,null)) AS totalSolved,
-                       count(if(status=1,1,null)) AS totalAssigned,
-                       count(if(status=0,1,null)) AS totalPending
-                       FROM complaints ";
-                       $result = mysqli_query($conn, $sqlQuery) or die("database error:". mysqli_error($conn));
-                       while( $data = mysqli_fetch_assoc($result) ) {
-                        $totalComplaints= $data['totalComplaints'];
-                        $totalAssigned= $data['totalAssigned'];
-                        $totalSolved= $data['totalSolved'];
-                        $totalPending= $data['totalPending'];
-
-                        echo"  -->
-
                 <div class='overview'>
                     <div class='title'>
                         <i class='uil uil-tachometer-fast-alt'></i>
@@ -233,22 +217,22 @@
                         <div class='box box3'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>TICKETS</span>
-                            <span class='number'>$totalComplaints</span>
+                            <span class='number'>0</span>
                         </div>
                         <div class='box box2'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>ASSIGNED</span>
-                            <span class='number'>$totalAssigned</span>
+                            <span class='number'>0</span>
                         </div>
                         <div class='box box1'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>SOLVED</span>
-                            <span class='number'>$totalSolved</span>
+                            <span class='number'>0</span>
                         </div>
                         <div class='box box4'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>UNASSAIGNED</span>
-                            <span class='number'> $totalPending</span>
+                            <span class='number'> 0</span>
                         </div>
                     </div>
                 </div>
@@ -321,13 +305,7 @@
                                             <?php echo convertToRelativeTime($complaint['Timestart']); ?>
                                         </td>
                                         <td>
-                                            <?php 
-                                                    $query ="SELECT UserId,Name FROM users WHERE UserType = 'IT Support' AND status != 'deleted'";
-                                                    $result = $conn->query($query);
-                                                    if($result->num_rows> 0){
-                                                        $officers= mysqli_fetch_all($result, MYSQLI_ASSOC);
-                                                    }
-                                                    ?>
+                                           
                                             <form class="assignT" name="assignT">
                                                 <input type="text" style="display: none;" class="issue" name="issue"
                                                     value=<?php echo $complaint['ComplaintId']; ?>>
@@ -392,10 +370,10 @@
                                     <tr class="clickable-row"
                                         data-description="<?php echo $data['Description'] ?? ''; ?>">
                                         <td>
-                                            <?php echo $complaint['ComplaintId']; ?>
+                                            123<?php echo $complaint['ComplaintId']; ?>
                                         </td>
                                         <td>
-                                            <?php echo $complaint['Description']; ?>
+                                            11<?php echo $complaint['Description']; ?>
                                         </td>
                                         <td>
                                             <?php echo $complaint['Department']; ?>
@@ -410,13 +388,13 @@
                                             <?php echo $complaint['Name']; ?>
                                         </td>
                                         <td>
-                                            <?php 
+                                            <!-- <?php 
                                                         $query ="SELECT UserId,Name FROM users WHERE UserType = 'IT Support' AND status != 'deleted'";
                                                         $result = $conn->query($query);
                                                         if($result->num_rows> 0){
                                                             $officers= mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                         }
-                                                        ?>
+                                                        -->
 
                                             <form class="transferT" name="transferT">
                                                 <input type="text" style="display: none;" class="issue" name="issue"
@@ -450,9 +428,7 @@
                         <!-- Links for Mobile -->
                         <input id="tabLinkMobile6" type="radio" name="tabs">
                         <label for="tabLinkMobile6" class="mobileAccordionLink">Raise Ticket</label>
-                        <?php
-                            require ('../commons/ticketraise.php');
-                            ?>
+                        {% include "app/raiseticket.html" %}
                     </div>
                 </div>
             </div>

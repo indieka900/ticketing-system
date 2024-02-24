@@ -8,7 +8,14 @@ class Department(models.Model):
     description = models.TextField()
     
 class Complaint(models.Model):
+    
+    status_choices = (
+        ('Pending','Pending'),
+        ('Solved', 'Solved')
+    )
+    
     message = models.TextField()
+    status = models.CharField(max_length = 20, choices=status_choices, default='Pending')
     file = models.FileField(upload_to="complaints", blank=True, null=True)
     date_posted = models.DateTimeField(auto_now_add=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
