@@ -24,7 +24,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     Role_choices = (
         ("Administrator", "Administrator"),
         ("Student", "Student"),
-        ("Chairman", "Chairman")
+        ("Chairperson", "Chairperson")
     )
     
     username_validator = UnicodeUsernameValidator()

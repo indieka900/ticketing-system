@@ -71,10 +71,16 @@
                 </ul>
 
                 <ul class="logout-mode">
-                    <li><a href="../membership/logout.php">
+                    <li><a href="{% url 'accounts:logout' %}">
                             <i class="uil uil-signout"></i>
                             <span class="link-name">Logout</span>
-                        </a></li>
+                        </a>
+                    </li>
+                    <li><a href="">
+                            <i class="uil uil-signout"></i>
+                            <span class="link-name">{{user.username}}</span>
+                        </a>
+                    </li>
 
                     <li class="mode">
                         <a href="javascript:void(0);">

@@ -42,6 +42,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'service_desk.urls'
 
+LOGOUT_REDIRECT_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'accounts:login'
+
 AUTH_USER_MODEL = "accounts.MyUser"
 
 TEMPLATES = [

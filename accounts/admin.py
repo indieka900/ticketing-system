@@ -11,6 +11,10 @@ def activate_users(modeladmin, request, queryset):
 @admin.action(description="deactivate selected users")
 def deactivate_users(modeladmin, request, queryset):
     queryset.update(is_active=False)
+    
+@admin.action(description="Set chairperson")
+def set_chairpersons(modeladmin, request, queryset):
+    queryset.update(role='Chairperson')
 
 @admin.register(MyUser)
 class UserAdminConfig(UserAdmin):
@@ -29,5 +33,5 @@ class UserAdminConfig(UserAdmin):
             'fields': ('email','full_name','reg_no','password1','password2','phone','is_staff','is_active','is_superuser','profile_pic')
         }),
     )
-    actions = [activate_users,deactivate_users]
+    actions = [activate_users,deactivate_users,set_chairpersons]
 # Register your models here.

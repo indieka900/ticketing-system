@@ -7,6 +7,9 @@ class Department(models.Model):
     chairperson = models.ForeignKey(MyUser, on_delete=models.SET_NULL, blank=True, null=True)
     description = models.TextField()
     
+    def __str__(self):
+        return self.department_name
+    
 class Complaint(models.Model):
     
     status_choices = (
