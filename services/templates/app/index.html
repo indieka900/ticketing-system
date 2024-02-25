@@ -20,19 +20,9 @@
             </div> -->
 
         <div>
-            <!-- <?php 
-                    function getComplaintCount($conn) {
-                        $sqlQuery = "SELECT count(complaintid) as totalComplaints FROM complaints";
-                        $result = mysqli_query($conn, $sqlQuery) or die("database error:". mysqli_error($conn));
-                        $data = mysqli_fetch_assoc($result);
-                        $totalComplaints = $data['totalComplaints'];
-                        
-                        return $totalComplaints;
-                    }
-                 ?> -->
             <a href="#D0" class="notification">
                 <span>Tickets</span>
-                <span id="mydiv" class="badge"></span>
+                <span id="mydiv" class="badge">2</span>
             </a>
         </div>
 
@@ -46,32 +36,18 @@
 
         <li id="D0">
 
-            <!-- <?php
-
-                $sqlQuery = "SELECT count(complaintid) as totalComplaints, 
-                count(if(status=2,1,null)) AS totalSolved,
-                count(if(status=0 || status=1 ,1,null)) AS totalPending
-                FROM complaints";
-                $result = mysqli_query($conn, $sqlQuery) or die("database error:". mysqli_error($conn));
-                while( $data = mysqli_fetch_assoc($result) ) {
-                    $totalComplaints= $data['totalComplaints'];
-                    $totalSolved= $data['totalSolved'];
-                    $totalPending= $data['totalPending'];
-
-                    echo"        -->
-
             <div class='dash-content'>
                 <div class='overview'>
                     <div class='title'>
                         <i class='uil uil-tachometer-fast-alt'></i>
-                        <span class='text'>Service Desk</span>
+                        <span class='text'>Student Dashboard</span>
                     </div>
 
                     <div class='boxes'>
                         <div class='box box1'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>TOTAL TICKETS</span>
-                            <span class='number'>0</span>
+                            <span class='number'>{{complaints|length}}</span>
                         </div>
                         <div class='box box2'>
                             <i class='uil uil-files-landscapes'></i>
@@ -118,85 +94,60 @@
                                 <tr style=" border:1px solid #8b8c8b; border-collapse:collapse;">
                                     <th>TICKET ID</th>
                                     <th>Description</th>
-                                    <th>Complainant</th>
-                                    <th>Expert Assigned</th>
+                                    <!-- <th>Complainant</th> -->
+                                    <th>Department</th>
                                     <th>Status</th>
-                                    <th>End Time</th>
+                                    <th>Posted On</th>
                                     <th>Action</th>
                                 </tr>
-                                <!-- <?php foreach ($complaints as $complaint) : ?> -->
+                                {% for complaint in complaints %}
+
+
                                 <tr style="background:#fdfdfd" class="clickable-row"
                                     data-description="<?php echo $data['Description'] ?? ''; ?>">
                                     <td>
-                                        <?php echo $complaint['ComplaintId']; ?>
+                                        {{complaint.id}}
                                     </td>
                                     <td>
-                                        <?php echo $complaint['Description']; ?>
-                                    </td>
-                                    <?php
-                                                $userrid= $complaint['UserId'];
-                                                $squery = "  SELECT Name FROM users  where `UserId` =$userrid ";
-                                                $sresult = mysqli_query($conn, $squery);
-                                                $row = mysqli_fetch_assoc($sresult); 
-                                                     //echo $row['Name'];
-                                                
-                                                ?>
-
-
-
-                                    <td>
-                                        <?php echo $row['Name']; ?>
+                                        {{complaint.message}}
                                     </td>
                                     <td>
-                                        <?php 
-                                                if ($complaint['Name']=='') {
-                                                    $Name ="None";
-                                                } else {
-                                                    $Name= $complaint['Name'];
-                                                } 
-                                                echo $Name; ?>
+                                        {{complaint.department}}
                                     </td>
                                     <td class="<?php echo ($complaint['Status'] === 0) ? 0 : 1; ?>">
 
-                                        <?php 
-
-                                                    if ($complaint['Status']==0) {
-                                                        $Status ="Pending";
-                                                    } else if ($complaint['Status']==1) {
-                                                        $Status= "Assigned";
-                                                    } 
-                                                    else{
-                                                        $Status= "Completed";
-                                                    }
-                                                    echo $Status; ?>
+                                        {{complaint.status}}
                                     </td>
                                     <td>
-                                        <?php if ($complaint['Status'] == 0) : ?>
-                                        <?php echo "Ticket is still open";?>
-
-                                        <?php else: ?>
-                                        <?php echo $complaint['Recipient_endtime']; ?>
-                                        <?php endif; ?>
+                                        {{complaint.date_posted|timesince}} ago
                                     </td>
                                     <td>
-                                        <?php if ($complaint['Status'] == 1) : ?>
-                                        <!--  <form class="markSolve" name="markSolve" >
-                                                        <input type="text" style="display: none;" class="issue" name="issue" value=<?php echo $complaint['ComplaintId']; ?>>
 
-                                                        <button  style=" padding: 5px 10px; border: none;  background-color: #333; color: #fff; cursor: pointer;"  type="submit" name="submit">Mark as Solved</button>
-                                                    </form> -->
+                                        {% if complaint.status == "Pending" %}
+                                        <form action="" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="id" value="{{complaint.id}}">
+                                            <button
+                                                style=" padding: 5px 10px; border: none;  background-color: #333; color: #fff; cursor: pointer;"
+                                                type="submit" name="solved">Mark Solved
+                                            </button>
+                                        </form>
+                                        <form action="" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="id" value="{{complaint.id}}">
+                                            <button
+                                                style=" padding: 5px 10px; border: none;  background-color: #333; color: #fff; cursor: pointer;"
+                                                type="submit" name="solved">Transfer
+                                            </button>
+                                        </form>
+                                        {% else %}
+
+                                        {% endif %}
 
 
-                                        <?php 
-                                                elseif ($complaint['Status'] == 0) :?>
-                                        <button onclick="location.href='#D2';"
-                                            style=" padding: 5px 10px; border: none;  background-color: #333; color: #fff; cursor: pointer;"
-                                            type="submit" name="submit">Assign Officer</button>
-
-                                        <?php endif; ?>
                                     </td>
                                 </tr>
-                                <?php endforeach; ?>
+                                {% endfor %}
                             </table>
                         </div>
                     </div>
@@ -305,7 +256,7 @@
                                             <?php echo convertToRelativeTime($complaint['Timestart']); ?>
                                         </td>
                                         <td>
-                                           
+
                                             <form class="assignT" name="assignT">
                                                 <input type="text" style="display: none;" class="issue" name="issue"
                                                     value=<?php echo $complaint['ComplaintId']; ?>>
@@ -370,10 +321,12 @@
                                     <tr class="clickable-row"
                                         data-description="<?php echo $data['Description'] ?? ''; ?>">
                                         <td>
-                                            123<?php echo $complaint['ComplaintId']; ?>
+                                            123
+                                            <?php echo $complaint['ComplaintId']; ?>
                                         </td>
                                         <td>
-                                            11<?php echo $complaint['Description']; ?>
+                                            11
+                                            <?php echo $complaint['Description']; ?>
                                         </td>
                                         <td>
                                             <?php echo $complaint['Department']; ?>
