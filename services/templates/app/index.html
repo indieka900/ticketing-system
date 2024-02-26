@@ -219,7 +219,7 @@
                                         <th>Description</th>
                                         <th>Department</th>
                                         <th>Raised On</th>
-                                        <th>Available Officers</th>
+                                        <th>Available Departments</th>
                                     </tr>
                                     {% for complaint in complaints %}
                                     <tr>
@@ -239,11 +239,11 @@
                                         </td>
                                         <td>
 
-                                            <form class="assignT" name="assignT">
-                                                <input type="text" style="display: none;" class="issue" name="issue"
-                                                    value=<?php echo $complaint['ComplaintId']; ?>>
-
-                                                <select class="expert" name="expert"
+                                            <form class="transferT" name="transferT" method="post" action="">
+                                                {% csrf_token %}
+                                                <input type="text" style="display: none;" class="issue" name="id"
+                                                    value={{complaint.id}}>
+                                                <select class="expert" name="department"
                                                     style=" padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer;"
                                                     required>
                                                     <option value="" disabled selected>Select Department</option>
@@ -255,9 +255,8 @@
 
                                                 </select>
                                                 <button
-                                                    style=" padding: 5px 10px; margin-left: 20px; border: none; background-color: #333; color: #fff; cursor: pointer;"
-                                                    type="submit" name="submit">Assign</button>
-
+                                                    style=" padding: 5px 10px; border: none; margin-left: 20px; background-color: #333; color: #fff; cursor: pointer;"
+                                                    type="submit" name="transfer">Transfer</button>
                                             </form>
 
                                         </td>
@@ -273,19 +272,6 @@
 
                         <!-- Content -->
                         <article class="tabContent" id="tabContent5">
-                            <!-- <?php
-
-
-                            $query = "SELECT ComplaintId, Description, Department, Location, Timestart, Expert_assigned, complaints.Expert_assigned,users.Name FROM complaints LEFT JOIN users ON users.userID= complaints.Expert_assigned WHERE Expert_assigned != '' AND complaints.status = 1 ORDER BY `ComplaintId` desc";
-
-                            $result = mysqli_query($conn, $query);
-                            $complaints = [];
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                $complaints[] = $row;
-                            }
-
-                            ?> -->
-                            <!-- <div id='adminDashTable'> -->
                             <div id="tickettransfer">
                                 <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                                     <tr style=" border:1px solid #8b8c8b; border-collapse:collapse;">

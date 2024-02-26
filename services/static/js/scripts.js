@@ -1,26 +1,26 @@
- function refreshDiv() {
-                    $.ajax({
-                        url: 'fetch_comp.php', // Your PHP script URL
-                        method: 'GET',
-                        success: function(data) {
-                            var totalComplaints = data.totalComplaints;
-                            var complaintCountDiv = document.getElementById("mydiv");
-                            complaintCountDiv.innerHTML = totalComplaints;
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            var complaintCountDiv = document.getElementById("mydiv");
-                            complaintCountDiv.innerHTML = 0;
-                             alert( errorThrown);
-                        }
-                    });
-                }
+function refreshDiv() {
+  $.ajax({
+    url: "fetch_comp.php", // Your PHP script URL
+    method: "GET",
+    success: function (data) {
+      var totalComplaints = data.totalComplaints;
+      var complaintCountDiv = document.getElementById("mydiv");
+      complaintCountDiv.innerHTML = totalComplaints;
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      var complaintCountDiv = document.getElementById("mydiv");
+      complaintCountDiv.innerHTML = 0;
+      alert(errorThrown);
+    },
+  });
+}
 
-                // Call the function when the page loads
-                window.onload = function() {
-                    refreshDiv();
-                    // Repeat every 3 seconds (3000 milliseconds)
-                    setInterval(refreshDiv, 3000);
-                };
+// Call the function when the page loads
+window.onload = function () {
+  refreshDiv();
+  // Repeat every 3 seconds (3000 milliseconds)
+  setInterval(refreshDiv, 3000);
+};
 
 function showDescr() {
   var probSel1 = document.getElementById("probSel");
@@ -35,203 +35,170 @@ function showDescr() {
 }
 */
 
+$(".complaintS").on("submit", function (e) {
+  if (confirm("Please review the information, Submit ticket?") == false) {
+    return false;
+  } else {
+    var dataString = $(this).serialize();
 
+    //alert(dataString); return false;
 
-$( '.complaintS' ).on( "submit", function(e) {
+    $.ajax({
+      type: "POST",
 
-  if ( confirm("Please review the information, Submit ticket?") == false ) {
-  return false ;
-} else {
+      url: "../commons/inc/complaintsend.php",
 
+      data: dataString,
 
-   var dataString = $(this).serialize();
+      success: function (jqXHR, textStatus, errorThrown) {
+        alert("Ticket submitted successfully");
+        window.location.reload();
+        // window.location.href = 'index.php#D2';
+        // $('.complaintS').load('.complaintS');
+      },
+    });
 
-                  //alert(dataString); return false;
-
-  $.ajax({
-
-    type: "POST",
-
-    url: "../commons/inc/complaintsend.php",
-
-    data: dataString,
-
-    success: function(jqXHR, textStatus, errorThrown) {
-      alert('Ticket submitted successfully')
-      window.location.reload();
-                                   // window.location.href = 'index.php#D2';
-                                   // $('.complaintS').load('.complaintS');
-    }
-  });
-
-  e.preventDefault();
-  
-}
-
- 
-
+    e.preventDefault();
+  }
 });
 
-
-
-
-
-
-$( '.markSolve' ).on( "submit", function(e) {
-
+$(".markSolve").on("submit", function (e) {
   var dataString = $(this).serialize();
 
-     //alert(dataString); return false;
+  //alert(dataString); return false;
 
   $.ajax({
-
     type: "POST",
 
     url: "../commons/inc/data.php",
 
     data: dataString,
 
-    success: function(jqXHR, textStatus, errorThrown) {
-      alert('Successful')
-      $('#admindash').load(document.URL + ' #admindash');
+    success: function (jqXHR, textStatus, errorThrown) {
+      alert("Successful");
+      $("#admindash").load(document.URL + " #admindash");
       window.location.reload();
-         //window.location.href = 'index.php#D0';
-    }
+      //window.location.href = 'index.php#D0';
+    },
   });
 
   e.preventDefault();
-
 });
 
-$( '.userConfirm' ).on( "submit", function(e) {
-
+$(".userConfirm").on("submit", function (e) {
   var dataString = $(this).serialize();
 
-     // alert(dataString); return false;
+  // alert(dataString); return false;
 
   $.ajax({
-
     type: "POST",
 
     url: "../commons/inc/dataConfirm.php",
 
     data: dataString,
 
-    success: function(jqXHR, textStatus, errorThrown) {
-      alert('Confirmed Successfully')
-      $('#userConfirmT').load(document.URL + ' #userConfirmT');
+    success: function (jqXHR, textStatus, errorThrown) {
+      alert("Confirmed Successfully");
+      $("#userConfirmT").load(document.URL + " #userConfirmT");
       window.location.reload();
-         //window.location.href = 'index.php#D1';
-    }
+      //window.location.href = 'index.php#D1';
+    },
   });
 
   e.preventDefault();
-
 });
 
-$( '.userEdit' ).on( "submit", function(e) {
-
+$(".userEdit").on("submit", function (e) {
   var dataString = $(this).serialize();
 
-      //alert(dataString); return false;
+  //alert(dataString); return false;
 
   $.ajax({
-
     type: "POST",
 
     url: "../commons/inc/dataEdit.php",
 
     data: dataString,
 
-    success: function(jqXHR, textStatus, errorThrown) {
-      alert('Saved successfully')
-      $('#userEditT').load(document.URL + ' #userEditT');
+    success: function (jqXHR, textStatus, errorThrown) {
+      alert("Saved successfully");
+      $("#userEditT").load(document.URL + " #userEditT");
       window.location.reload();
-         //window.location.href = 'index.php#D1';
-    }
+      //window.location.href = 'index.php#D1';
+    },
   });
 
   e.preventDefault();
-
 });
 
-$( '.userDelete' ).on( "submit", function(e) {
-
+$(".userDelete").on("submit", function (e) {
   var dataString = $(this).serialize();
 
-      // alert(dataString); return false;
+  // alert(dataString); return false;
 
   $.ajax({
-
     type: "POST",
 
     url: "../commons/inc/dataDelete.php",
 
     data: dataString,
 
-    success: function(jqXHR, textStatus, errorThrown) {
-      alert('Deleted successfully')
-      $('#userDeleteT').load(document.URL + ' #userDeleteT');
+    success: function (jqXHR, textStatus, errorThrown) {
+      alert("Deleted successfully");
+      $("#userDeleteT").load(document.URL + " #userDeleteT");
       window.location.reload();
-         // window.location.href = 'index.php#D1';
-    }
+      // window.location.href = 'index.php#D1';
+    },
   });
 
   e.preventDefault();
-
 });
 
-$( '.assignT' ).on( "submit", function(e) {
-
+$(".assignT").on("submit", function (e) {
   var dataString = $(this).serialize();
 
-     //alert(dataString); return false;
+  //alert(dataString); return false;
 
   $.ajax({
-
     type: "POST",
 
     url: "../commons/inc/assign.php",
 
     data: dataString,
 
-    success: function(jqXHR, textStatus, errorThrown) {
-      alert('Assigned successfully')
+    success: function (jqXHR, textStatus, errorThrown) {
+      alert("Assigned successfully");
       window.location.reload();
-        // window.location.href = 'index.php#D2';
-    }
+      // window.location.href = 'index.php#D2';
+    },
   });
 
   e.preventDefault();
-
 });
 
-$( '.transferT' ).on( "submit", function(e) {
-
+$(".transferT").on("submit", function (e) {
   var dataString = $(this).serialize();
 
-                        // alert(dataString); return false;
+  // alert(dataString); return false;
 
   $.ajax({
-
     type: "POST",
 
     url: "../commons/inc/assign.php",
 
     data: dataString,
 
-    success: function(jqXHR, textStatus, errorThrown) {
-      alert('Transfered successfully')
+    success: function (jqXHR, textStatus, errorThrown) {
+      alert("Transfered successfully");
       window.location.reload();
-                             // window.location.href = 'index.php#D2';
-    }
+      // window.location.href = 'index.php#D2';
+    },
   });
 
   e.preventDefault();
-
 });
 
- /*var options = $('select.problemDescription option');
+/*var options = $('select.problemDescription option');
     var arr = options.map(function(_, o) {
         return {
             t: $(o).text(),
@@ -246,7 +213,3 @@ $( '.transferT' ).on( "submit", function(e) {
         o.value = arr[i].v;
         $(o).text(arr[i].t);
     }); */
-
-
-
-

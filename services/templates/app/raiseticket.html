@@ -2,12 +2,13 @@
     <div class="activity">
         <div class="activity-data">
             <div class="complaint" id="ticket">
-                <form class="complaintS" name="complaintS" onsubmit="return submitResult();">
+                <form class="complaintS" method="post" action="" enctype="multipart/form-data" name="complaintS" >
+                    {% csrf_token %}
                     <!--<form class="complaintS" name="complaintS" onsubmit="return submitResult();"> -->
                     <center>
                         <h3>Fill in the user support form</h3>
                     </center>
-                    <select class="location" name="location"
+                    <!-- <select class="location" name="location"
                         style=" padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer; margin-bottom: 10px;"
                         required>
                         <option value="" disabled selected> Select Location</option>
@@ -19,18 +20,18 @@
                         <option value="Teleposta 10th Floor">Teleposta 10th Floor</option>
                         <option value="Teleposta 11th Floor">Teleposta 11th Floor</option>
                         <option value="Other">Other</option>
-                    </select>
+                    </select> -->
                     <select class="department" name="department"
                         style=" padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer; margin-bottom: 10px; margin-left: 10px;"
                         required>
                         <option value="" disabled selected>Select Department</option>
-                        <option value="Planning">Planning</option>
-                        <option value="Human Resource">Human Resource</option>
-                        <option value="Security">Security</option>
-                        <option value="Infrastructure">Infrastructure</option>
-                        <option value="Systems">Systems</option>
+                        {% for department in departments %}
+                        <option value={{department.id}}>
+                            {{department.department_name}}
+                        </option>
+                        {% endfor %}
                     </select>
-                    <select class="problemDescription" name="problemDescription" id="probSel"
+                    <!-- <select class="problemDescription" name="problemDescription" id="probSel"
                         style=" padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer; margin-bottom: 10px;"
                         required onchange="showDescr()">
                         <option value="" disabled selected>Select Problem</option>
@@ -50,24 +51,15 @@
                         <option value="Software request">Software request</option>
 
                         <option value="Other - Describe">Other - Describe</option>
-                    </select>
-                    <textarea style="display:none;" name="problemDetail" id="descr" cols="30" rows="10"
+                    </select> -->
+                    <textarea  name="problemDetail" id="descr" cols="30" rows="10"
                         placeholder="PROBLEM DESCRIPTION"></textarea>
 
-                    <div class="myDeadline">
-                        <label for="deadline" style="cursor: none; border: none; ">Deadline</label>
-                        <input type="datetime-local" name="deadline" placeholder="Deadline" required>
-                    </div>
-                    <!-- <label for="rangen" style="border: none;">Priority</label>
-                    <div style="display: inline-flex; margin: auto; ">
 
-                        <label for="rangen" style="border: none;">0 (Trivial)</label>
-                        <input style="accent-color: #ff7801;" type="range" name="priority" id="rangen" placeholder=""
-                            max="10" min="0" required>
-                        <label for="rangen" style="border: none;">10 (Urgent)</label> 
-                    </div>-->
+                    <label for="myfile">Select a file:</label>
+                    <input type="file" id="myfile" name="myfile">
                     <center>
-                        <button type="submit" name="submit">Submit</button>
+                        <button type="submit" name="create-comp">Submit</button>
                     </center>
                 </form>
 
