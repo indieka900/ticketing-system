@@ -16,7 +16,7 @@ from django.utils.http import urlsafe_base64_decode
 from accounts.forms import UserSignUpForm, ForgotPasswordForm
 # from rental_app.models import Rooms
 # from rental_app.views import common_data
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 
 #create new account
@@ -163,6 +163,11 @@ def login_user(request):
             messages.error(request, 'Incorrect password or account is not activated')
             return redirect(reverse('accounts:login'))
     return render(request, 'accounts/login.html',)
+
+#logout the logged in user   
+def log_out(request):
+    logout(request)
+    return redirect('accounts:login')
 
 #edit profile
 '''@login_required

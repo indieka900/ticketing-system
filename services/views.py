@@ -6,6 +6,7 @@ from services.models import (Complaint,Feedback,Department)
 def home(request):
     
     complaints = Complaint.objects.filter(sender = request.user)
+    departments = Department.objects.all()
     
     if request.method == 'POST':
         if 'solved' in request.POST:
@@ -16,7 +17,8 @@ def home(request):
             #success message
     
     context = {
-        'complaints':complaints
+        'complaints':complaints,
+        'departments' : departments,
     }
     
     return render(request, 'app/index.html', context)

@@ -187,9 +187,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- ";
-                    } 
-                    ?> -->
 
 
                 <div class="cssAnimsDemo">
@@ -197,8 +194,8 @@
 
 
                         <!-- Links for Desktop -->
-                        <input id="tabLink4" type="radio" name="tabs" checked>
-                        <label for="tabLink4" class="desktopTabLink" style="width: 32%;">Assign Ticket</label>
+                        <!-- <input id="tabLink4" type="radio" name="tabs" checked>
+                        <label for="tabLink4" class="desktopTabLink" style="width: 32%;">Assign Ticket</label> -->
 
                         <input id="tabLink5" type="radio" name="tabs">
                         <label for="tabLink5" class="desktopTabLink" style="width: 32%;">Transfer Ticket</label>
@@ -214,17 +211,6 @@
                         <!-- Content -->
                         <article class="tabContent" id="tabContent4">
 
-                            <!-- <?php
-
-
-                         $query = "SELECT c.ComplaintId, c.Description, c.Department, c.Location, c.Timestart  FROM complaints AS c WHERE Expert_assigned = '' ORDER BY `ComplaintId` desc";
-
-                         $result = mysqli_query($conn, $query);
-                         $complaints = [];
-                         while ($row = mysqli_fetch_assoc($result)) {
-                            $complaints[] = $row;
-                        }
-                        ?> -->
                             <!-- <div id='adminDashTable'> -->
                             <div id="ticketassign">
                                 <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
@@ -265,13 +251,13 @@
                                                 <select class="expert" name="expert"
                                                     style=" padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer;"
                                                     required>
-                                                    <option value="" disabled selected>Select Officer</option>
-                                                    <?php foreach ($officers as $officer) {  
-                                                                ?>
-                                                    <option value="<?php echo $officer['UserId']; ?>">
-                                                        <?php echo $officer['Name']; ?>
-                                                    </option>
-                                                    <?php  } ?>
+                                                    <option value="" disabled selected>Select Department</option>
+                                                    {% for department in departments %}
+                                                        <option value={{department.id}}>
+                                                            {{department.department_name}}
+                                                        </option>
+                                                    {% endfor %}
+                                                    
                                                 </select>
                                                 <button
                                                     style=" padding: 5px 10px; margin-left: 20px; border: none; background-color: #333; color: #fff; cursor: pointer;"
