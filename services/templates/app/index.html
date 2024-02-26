@@ -218,46 +218,41 @@
                                         <th>Ticket Id</th>
                                         <th>Description</th>
                                         <th>Department</th>
-                                        <th>Location</th>
                                         <th>Raised On</th>
                                         <th>Available Officers</th>
                                     </tr>
-                                    <?php foreach ($complaints as $complaint) : ?>
+                                    {% for complaint in complaints %}
                                     <tr>
-                                    <tr class="clickable-row"
-                                        data-description="<?php echo $data['Description'] ?? ''; ?>">
+                                    <tr class="clickable-row" data-description={{complaint.message}}>
                                         <td>
-                                            <?php echo $complaint['ComplaintId']; ?>
+                                            {{complaint.id}}
                                         </td>
                                         <td>
-                                            <?php echo $complaint['Description']; ?>
+                                            {{complaint.message}}
                                         </td>
                                         <td>
-                                            <?php echo $complaint['Department']; ?>
+                                            {{complaint.department}}
                                         </td>
+
                                         <td>
-                                            <?php echo $complaint['Location']; ?>
-                                        </td>
-                                        <td>
-                                            <?php echo convertToRelativeTime($complaint['Timestart']); ?>
+                                            {{complaint.date_posted|timesince}} ago
                                         </td>
                                         <td>
 
                                             <form class="assignT" name="assignT">
                                                 <input type="text" style="display: none;" class="issue" name="issue"
                                                     value=<?php echo $complaint['ComplaintId']; ?>>
-                                                <input type="text" style="display: none;" class="userid" name="userid"
-                                                    value=<?php echo $uid; ?>>
+
                                                 <select class="expert" name="expert"
                                                     style=" padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer;"
                                                     required>
                                                     <option value="" disabled selected>Select Department</option>
                                                     {% for department in departments %}
-                                                        <option value={{department.id}}>
-                                                            {{department.department_name}}
-                                                        </option>
+                                                    <option value={{department.id}}>
+                                                        {{department.department_name}}
+                                                    </option>
                                                     {% endfor %}
-                                                    
+
                                                 </select>
                                                 <button
                                                     style=" padding: 5px 10px; margin-left: 20px; border: none; background-color: #333; color: #fff; cursor: pointer;"
@@ -267,7 +262,7 @@
 
                                         </td>
                                     </tr>
-                                    <?php endforeach; ?>
+                                    {% endfor %}
                                 </table>
                             </div>
 
@@ -297,68 +292,49 @@
                                         <th>Ticket Id</th>
                                         <th>Description</th>
                                         <th>Department</th>
-                                        <th>Location</th>
                                         <th>Raised On</th>
-                                        <th>Expert Assigned</th>
-                                        <th>Available Officers</th>
+                                        <th>Available Departments</th>
                                     </tr>
-                                    <?php foreach ($complaints as $complaint) : ?>
+                                    {% for complaint in complaints %}
                                     <tr>
-                                    <tr class="clickable-row"
-                                        data-description="<?php echo $data['Description'] ?? ''; ?>">
+                                    <tr class="clickable-row" data-description="{{complaint.message}}">
                                         <td>
-                                            123
-                                            <?php echo $complaint['ComplaintId']; ?>
+                                            {{complaint.id}}
                                         </td>
                                         <td>
-                                            11
-                                            <?php echo $complaint['Description']; ?>
+                                            {{complaint.message}}
                                         </td>
                                         <td>
-                                            <?php echo $complaint['Department']; ?>
+                                            {{complaint.department}}
                                         </td>
                                         <td>
-                                            <?php echo $complaint['Location']; ?>
+                                            {{complaint.date_posted|timesince}} ago
                                         </td>
                                         <td>
-                                            <?php echo convertToRelativeTime($complaint['Timestart']); ?>
-                                        </td>
-                                        <td>
-                                            <?php echo $complaint['Name']; ?>
-                                        </td>
-                                        <td>
-                                            <!-- <?php 
-                                                        $query ="SELECT UserId,Name FROM users WHERE UserType = 'IT Support' AND status != 'deleted'";
-                                                        $result = $conn->query($query);
-                                                        if($result->num_rows> 0){
-                                                            $officers= mysqli_fetch_all($result, MYSQLI_ASSOC);
-                                                        }
-                                                        -->
 
-                                            <form class="transferT" name="transferT">
-                                                <input type="text" style="display: none;" class="issue" name="issue"
-                                                    value=<?php echo $complaint['ComplaintId']; ?>>
-                                                <input type="text" style="display: none;" class="userid" name="userid"
-                                                    value=<?php echo $uid; ?>>
-                                                <select class="expert" name="expert"
+                                            <form class="transferT" name="transferT" method="post" action="">
+                                                {% csrf_token %}
+                                                <input type="text" style="display: none;" class="issue" name="id"
+                                                    value={{complaint.id}}>
+                                                <select class="expert" name="department"
                                                     style=" padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer;"
                                                     required>
-                                                    <option value="" disabled selected>Select Officer</option>
-                                                    <?php foreach ($officers as $officer) {  
-                                                                    ?>
-                                                    <option value="<?php echo $officer['UserId']; ?>">
-                                                        <?php echo $officer['Name']; ?>
+                                                    <option value="" disabled selected>Select Department</option>
+                                                    {% for department in departments %}
+                                                    <option value={{department.id}}>
+                                                        {{department.department_name}}
                                                     </option>
-                                                    <?php  } ?>
+                                                    {% endfor %}
+
                                                 </select>
                                                 <button
                                                     style=" padding: 5px 10px; border: none; margin-left: 20px; background-color: #333; color: #fff; cursor: pointer;"
-                                                    type="submit" name="submit">Transfer</button>
+                                                    type="submit" name="transfer">Transfer</button>
                                             </form>
 
                                         </td>
                                     </tr>
-                                    <?php endforeach; ?>
+                                    {% endfor %}
                                 </table>
                             </div>
                         </article>

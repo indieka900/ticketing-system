@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from services.models import (Complaint,Feedback,Department)
 
@@ -14,6 +14,17 @@ def home(request):
             complaint = Complaint.objects.get(pk=id)
             complaint.status = 'Solved'
             complaint.save()
+            #success message
+            
+        if 'transfer' in request.POST:
+            id = request.POST.get('id')
+            department = request.POST.get('department')
+            complaint = Complaint.objects.get(pk=id)
+            depart = Department.objects.get(pk=department)
+            print(department)
+            complaint.department = depart
+            complaint.save()
+            return redirect('services:homepage')
             #success message
     
     context = {
