@@ -14,6 +14,14 @@
             <h1> ICT SUPPORT TICKETING SYSTEM</h1>
         </span>
 
+        <!-- {% if messages %}
+        {% for message in messages %}
+        <div class="mb-3 alert alert-success text-center">
+            {{message}}
+        </div>
+        {% endfor %}
+        {% endif %} -->
+
         <!-- <div class="search-box">
                 <i class="uil uil-search"></i>
                 <input type="text" placeholder="Search here...">
@@ -44,20 +52,20 @@
                     </div>
 
                     <div class='boxes'>
-                        <div class='box box1'>
+                        <div class='col-md-4 box box1'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>TOTAL TICKETS</span>
                             <span class='number'>{{complaints|length}}</span>
                         </div>
-                        <div class='box box2'>
+                        <div class='col-md-3 box box2'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>SOLVED TICKETS</span>
-                            <span class='number'>0</span>
+                            <span class='number'>{{ solved|length }}</span>
                         </div>
-                        <div class='box box3'>
+                        <div class='col-md-4 box box3'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>PENDING TICKETS</span>
-                            <span class='number'>0</span>
+                            <span class='number'>{{ pending|length }}</span>
                         </div>
                     </div>
                 </div>
@@ -71,24 +79,6 @@
                     </div>
 
                     <div class="activity-data">
-
-
-                        <!-- 
-                        <?php
-
-
-                        $query = "SELECT ComplaintId, Description, complaints.Expert_assigned,users.Name, complaints.Status,complaints.UserId, Recipient_endtime FROM complaints LEFT JOIN users ON users.userID= complaints.Expert_assigned ORDER BY `ComplaintId` desc ";
-                        $result = mysqli_query($conn, $query);
-
-
-                        $complaints = [];
-                        while ($row = mysqli_fetch_assoc($result)) {
-                            $complaints[] = $row;
-                        }
-                        ?> -->
-                        <!-- <div id='adminDashTable'> -->
-
-                        <!-- <div id='adminDashTable'> -->
                         <div id="adminDash" style="width: 100%;">
                             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                                 <tr style=" border:1px solid #8b8c8b; border-collapse:collapse;">
@@ -132,14 +122,7 @@
                                                 type="submit" name="solved">Mark Solved
                                             </button>
                                         </form>
-                                        <form action="" method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="id" value="{{complaint.id}}">
-                                            <button
-                                                style=" padding: 5px 10px; border: none;  background-color: #333; color: #fff; cursor: pointer;"
-                                                type="submit" name="solved">Transfer
-                                            </button>
-                                        </form>
+
                                         {% else %}
 
                                         {% endif %}
@@ -165,25 +148,20 @@
                     </div>
 
                     <div class='boxes'>
-                        <div class='box box3'>
+                        <div class='col-md-4 box box1'>
                             <i class='uil uil-files-landscapes'></i>
-                            <span class='text'>TICKETS</span>
-                            <span class='number'>0</span>
+                            <span class='text'>TOTAL TICKETS</span>
+                            <span class='number'>{{complaints|length}}</span>
                         </div>
-                        <div class='box box2'>
+                        <div class='col-md-3 box box2'>
                             <i class='uil uil-files-landscapes'></i>
-                            <span class='text'>ASSIGNED</span>
-                            <span class='number'>0</span>
+                            <span class='text'>SOLVED TICKETS</span>
+                            <span class='number'>{{ solved|length }}</span>
                         </div>
-                        <div class='box box1'>
+                        <div class='col-md-4 box box3'>
                             <i class='uil uil-files-landscapes'></i>
-                            <span class='text'>SOLVED</span>
-                            <span class='number'>0</span>
-                        </div>
-                        <div class='box box4'>
-                            <i class='uil uil-files-landscapes'></i>
-                            <span class='text'>UNASSAIGNED</span>
-                            <span class='number'> 0</span>
+                            <span class='text'>PENDING TICKETS</span>
+                            <span class='number'>{{ pending|length }}</span>
                         </div>
                     </div>
                 </div>
@@ -221,7 +199,7 @@
                                         <th>Raised On</th>
                                         <th>Available Departments</th>
                                     </tr>
-                                    {% for complaint in complaints %}
+                                    {% for complaint in pending %}
                                     <tr>
                                     <tr class="clickable-row" data-description={{complaint.message}}>
                                         <td>

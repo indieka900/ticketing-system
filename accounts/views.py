@@ -152,11 +152,12 @@ def login_user(request):
             user= MyUser.objects.get(email=email, reg_no=reg_no)
         except MyUser.DoesNotExist:
             messages.error(request, 'email/registration number does not exist!') 
+            return redirect('accounts:login')
         user = authenticate(request, email=email, password=password)
         
         if user is not None:
             login(request, user)
-            # messages.success(request, 'Logged in succesfully')
+            messages.success(request, 'Logged in succesfully')
             return redirect('/')
         
         else:

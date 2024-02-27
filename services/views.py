@@ -9,6 +9,9 @@ def home(request):
     complaints = Complaint.objects.filter(sender = request.user)
     departments = Department.objects.all()
     
+    solved_tickets = complaints.filter(status='Solved')
+    pending_tickets = complaints.filter(status='Pending')
+    
     f = CreateComplaintForm()
     
     if request.method == 'POST':
@@ -17,6 +20,7 @@ def home(request):
             complaint = Complaint.objects.get(pk=id)
             complaint.status = 'Solved'
             complaint.save()
+            return redirect('services:homepage')
             #success message
             
         if 'transfer' in request.POST:
@@ -44,6 +48,8 @@ def home(request):
     
     context = {
         'complaints':complaints,
+        'solved':solved_tickets,
+        'pending':pending_tickets,
         'departments' : departments,
         'form':f,
     }

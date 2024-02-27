@@ -10,7 +10,7 @@
     <script src="{% static 'js/jquery-3.7.0.js' %}"></script>
     <link rel='stylesheet' href='https://unicons.iconscout.com/release/v4.0.0/css/line.css'>
 
-    s
+    
 
 </head>
 
@@ -95,6 +95,13 @@
                 </ul>
             </div>
         </nav>
+        {% if messages %}
+        {% for message in messages %}
+        <div class="mb-3 alert alert-success text-center">
+            {{message}}
+        </div>
+        {% endfor %}
+        {% endif %}
 
 
         {% block body %}
