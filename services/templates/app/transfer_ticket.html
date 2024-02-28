@@ -1,0 +1,52 @@
+<article class="tabContent" id="tabContent5">
+    <div id="tickettransfer">
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr style=" border:1px solid #8b8c8b; border-collapse:collapse;">
+                <th>Ticket Id</th>
+                <th>Description</th>
+                <th>Department</th>
+                <th>Raised On</th>
+                <th>Available Departments</th>
+            </tr>
+            {% for complaint in complaints %}
+            <tr>
+            <tr class="clickable-row" data-description="{{complaint.message}}">
+                <td>
+                    {{complaint.id}}
+                </td>
+                <td>
+                    {{complaint.message}}
+                </td>
+                <td>
+                    {{complaint.department}}
+                </td>
+                <td>
+                    {{complaint.date_posted|timesince}} ago
+                </td>
+                <td>
+
+                    <form class="transferT" name="transferT" method="post" action="">
+                        {% csrf_token %}
+                        <input type="text" style="display: none;" class="issue" name="id" value={{complaint.id}}>
+                        <select class="expert" name="department"
+                            style=" padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer;"
+                            required>
+                            <option value="" disabled selected>Select Department</option>
+                            {% for department in departments %}
+                            <option value={{department.id}}>
+                                {{department.department_name}}
+                            </option>
+                            {% endfor %}
+
+                        </select>
+                        <button
+                            style=" padding: 5px 10px; border: none; margin-left: 20px; background-color: #333; color: #fff; cursor: pointer;"
+                            type="submit" name="transfer">Transfer</button>
+                    </form>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</article>
