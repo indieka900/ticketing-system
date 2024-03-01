@@ -96,7 +96,7 @@
                                 <tr style="background:#fdfdfd" class="clickable-row"
                                     data-description="<?php echo $data['Description'] ?? ''; ?>">
                                     <td>
-                                        {{complaint.id}}
+                                        <a href="/complaint/{{complaint.id}}/ ">{{complaint.id}}</a>
                                     </td>
                                     <td>
                                         {{complaint.message}}
@@ -197,9 +197,9 @@
                                         <th>Description</th>
                                         <th>Department</th>
                                         <th>Raised On</th>
-                                        <th>Available Departments</th>
+                                        <!-- <th>Available Departments</th> -->
                                     </tr>
-                                    {% for complaint in pending %}
+                                    {% for complaint in complaints %}
                                     <tr>
                                     <tr class="clickable-row" data-description={{complaint.message}}>
                                         <td>
@@ -215,7 +215,7 @@
                                         <td>
                                             {{complaint.date_posted|timesince}} ago
                                         </td>
-                                        <td>
+                                        <!-- <td>
 
                                             <form class="transferT" name="transferT" method="post" action="">
                                                 {% csrf_token %}
@@ -237,7 +237,7 @@
                                                     type="submit" name="transfer">Transfer</button>
                                             </form>
 
-                                        </td>
+                                        </td> -->
                                     </tr>
                                     {% endfor %}
                                 </table>

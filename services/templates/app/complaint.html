@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+
+{% block body %}
+<section class="dashboard">
+    <div class="top">
+        <i class="uil uil-bars sidebar-toggle"></i>
+
+
+        <span class="logo_name">
+            <h1> ICT SUPPORT TICKETING SYSTEM</h1>
+        </span>
+
+        <div>
+            <a href="#D0" class="notification">
+                <span>Tickets</span>
+                <span id="mydiv" class="badge">2</span>
+            </a>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    </div>
+    <ul class="tab-content">
+        <li id="D0">
+            <div class="dash-content">
+                <div class="overview">
+                    <div class="title">
+                        <i class="uil uil-clock-three"></i>
+                        <span class="text">Recent Activity</span>
+                    </div>
+                    <h2>{{ complaint.message }}</h2>
+                    <iframe src="https://docs.google.com/gview?url={{complaint.file}}&embedded=true"
+                        style="width:200px; height:250px;" frameborder="0"></iframe>
+
+                </div>
+
+            </div>
+
+        </li>
+    </ul>
+
+</section>
+{% endblock body %}

@@ -56,4 +56,12 @@ def home(request):
     
     return render(request, 'app/index.html', context)
 
+@login_required
+def viewComp(request, pk):
+    complaint = Complaint.objects.get(pk=pk)
+    context = {
+        'complaint': complaint,
+    }
+    return render(request, 'app/complaint.html', context)
+
 # Create your views here.
