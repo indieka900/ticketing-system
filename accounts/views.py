@@ -30,7 +30,7 @@ class SignupView(CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        if form.is_valid():
+        if form.is_valid():  
             user = form.save(commit=False)
             user.save()
                 
@@ -113,7 +113,7 @@ def forgot_password(request):
   
 
 #change password functionality
-@login_required(login_url='/')
+@login_required
 def changePassword(request):
     if request.method == 'POST':
         user = request.user
