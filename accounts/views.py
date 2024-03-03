@@ -14,8 +14,6 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode 
 # from accounts.tokens import account_activation_token
 from accounts.forms import UserSignUpForm, ForgotPasswordForm
-# from rental_app.models import Rooms
-# from rental_app.views import common_data
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 
