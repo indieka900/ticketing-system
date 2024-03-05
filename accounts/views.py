@@ -14,6 +14,7 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode 
 # from accounts.tokens import account_activation_token
 from accounts.forms import UserSignUpForm, ForgotPasswordForm
+from services.models import Department
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 
@@ -142,17 +143,37 @@ def changePassword(request):
 
 #login user 
 def login_user(request):
+    user =''
     if request.method == 'POST':
-        email = request.POST.get('email')
-        reg_no = request.POST.get('reg_no')
-        password = request.POST.get('password')
-        try:
-            user= MyUser.objects.get(email=email, reg_no=reg_no)
-        except MyUser.DoesNotExist:
-            messages.error(request, 'email/registration number does not exist!') 
-            return redirect('accounts:login')
-        user = authenticate(request, email=email, password=password)
-        
+        if 'students' in request.POST:
+            email = request.POST.get('email')
+            reg_no = request.POST.get('reg_no')
+            password = request.POST.get('password')
+            try:
+                user= MyUser.objects.get(email=email, reg_no=reg_no)
+                user.set_password(password)
+            except MyUser.DoesNotExist:
+                messages.error(request, 'email/registration number does not exist!') 
+                return redirect('accounts:login')
+            user = authenticate(request, email=email, password=password)
+        elif 'chair' in request.POST:
+            email = request.POST.get('email')
+            department_no = request.POST.get('department_no')
+            password = request.POST.get('password')
+            try:
+                user= MyUser.objects.get(email=email)
+                # user.set_password(password)
+                try:
+                    depart = Department.objects.get(chairperson=user)
+                    print(f'found {depart.department_number} ')
+                except MyUser.DoesNotExist:
+                    messages.error(request, 'Error occured while fetching the department') 
+                    return redirect('accounts:login')
+            except MyUser.DoesNotExist:
+                messages.error(request, 'email does not exist!') 
+                return redirect('accounts:login')
+            user = authenticate(request, email=email, password=password)
+        print(user)
         if user is not None:
             login(request, user)
             messages.success(request, 'Logged in succesfully')

@@ -1,30 +1,65 @@
-{% extends "accounts/base.html" %}
-{% block title %}Login{% endblock title %}
-{% block act %}Login{% endblock act %}
+{% extends "accounts/base.html" %} {% block title %}Login{% endblock title %}
+<!-- {% block act %}Login{% endblock act %} -->
 {% block content %}
-<form action="" method="post">
-  {% csrf_token %}
-  <div class="input-box">
-    <input type="email" name="email" placeholder="Enter your school email" required>
+<div class="container">
+  <div class="wrapper">
+    <h2>Student Login</h2>
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="input-box">
+        <input type="email" name="email" placeholder="Enter your school email" required />
+      </div>
+      <div class="input-box">
+        <input type="text" name="reg_no" placeholder="Enter your registration number" required />
+      </div>
+      <div class="input-box">
+        <input type="password" name="password" placeholder="Enter password" required />
+      </div>
+      <ul>
+        {% for message in messages %}
+        <li style="color: red">{{message}}</li>
+      </ul>
+      {% endfor %}
+      <div class="input-box button">
+        <input type="Submit" name="student" value="Login Now" />
+      </div>
+      <div class="text">
+        <h3>
+          Don't have an account?
+          <a href="{% url 'accounts:sign-up' %}">Register Now</a>
+        </h3>
+      </div>
+    </form>
   </div>
-  <div class="input-box">
-    <input type="text" name="reg_no" placeholder="Enter your registration number" required>
+  <!-- <div style="margin-inline: 20px"></div> -->
+  <div class="wrapper">
+    <h2>Depatment Login</h2>
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="input-box">
+        <input type="email" name="email" placeholder="Enter your school email" required />
+      </div>
+      <div class="input-box">
+        <input type="text" name="department_no" placeholder="Enter the department number" required />
+      </div>
+      <div class="input-box">
+        <input type="password" name="password" placeholder="Enter password" required />
+      </div>
+      <ul>
+        {% for message in messages %}
+        <li style="color: red">{{message}}</li>
+      </ul>
+      {% endfor %}
+      <div class="input-box button">
+        <input type="Submit" name="chair" value="Login Now" />
+      </div>
+      <div class="text">
+        <h3>
+          Don't have an account?
+          <a href="{% url 'accounts:sign-up' %}">Register Now</a>
+        </h3>
+      </div>
+    </form>
   </div>
-  <div class="input-box">
-    <input type="password" name="password" placeholder="Enter password" required>
-  </div>
-  <ul>
-    {% for message in messages %}
-    <li style="color: red;">
-      {{message}}
-    </li>
-  </ul>
-  {% endfor %}
-  <div class="input-box button">
-    <input type="Submit" value="Login Now">
-  </div>
-  <div class="text">
-    <h3>Don't have an account? <a href="{% url 'accounts:sign-up' %}">Register Now</a></h3>
-  </div>
-</form>
+</div>
 {% endblock content %}
