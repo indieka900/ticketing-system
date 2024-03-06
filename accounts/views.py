@@ -143,46 +143,53 @@ def changePassword(request):
 
 #login user 
 def login_user(request):
-    user =''
+    user = ''
     if request.method == 'POST':
         if 'students' in request.POST:
             email = request.POST.get('email')
             reg_no = request.POST.get('reg_no')
             password = request.POST.get('password')
             try:
-                user= MyUser.objects.get(email=email, reg_no=reg_no)
-                user.set_password(password)
+                user = MyUser.objects.get(email=email, reg_no=reg_no)
+                print(f'Hello {user.username}')
             except MyUser.DoesNotExist:
-                messages.error(request, 'email/registration number does not exist!') 
+                messages.error(request, 'Email/registration number does not exist!')
                 return redirect('accounts:login')
-            user = authenticate(request, email=email, password=password)
         elif 'chair' in request.POST:
             email = request.POST.get('email')
             department_no = request.POST.get('department_no')
             password = request.POST.get('password')
             try:
-                user= MyUser.objects.get(email=email)
+                user = MyUser.objects.get(email=email)
                 # user.set_password(password)
+                print(user.username)
                 try:
                     depart = Department.objects.get(chairperson=user)
-                    print(f'found {depart.department_number} ')
-                except MyUser.DoesNotExist:
-                    messages.error(request, 'Error occured while fetching the department') 
+                    print(f'Found {depart.department_number}')
+                except Department.DoesNotExist:
+                    messages.error(request, 'Error occurred while fetching the department')
                     return redirect('accounts:login')
             except MyUser.DoesNotExist:
-                messages.error(request, 'email does not exist!') 
+                messages.error(request, 'Email does not exist!')
                 return redirect('accounts:login')
-            user = authenticate(request, email=email, password=password)
-        print(user)
+
         if user is not None:
-            login(request, user)
-            messages.success(request, 'Logged in succesfully')
-            return redirect('/')
-        
-        else:
-            messages.error(request, 'Incorrect password or account is not activated')
-            return redirect(reverse('accounts:login'))
+            # print(f'Bye {email}')
+            print(f'Hello {user.email}')
+            authenticated_user = authenticate(request, email=user.email, password=password)
+            if authenticated_user is not None:
+                login(request, authenticated_user)
+                messages.success(request, 'Logged in successfully')
+                if 'students' in request.POST:
+                    return redirect('/home/student/')
+                if 'chair' in request.POST:
+                    return redirect('/home/chair/')
+            else:
+                messages.error(request, 'Incorrect password or account is not activated')
+                return redirect(reverse('accounts:login'))
+
     return render(request, 'accounts/login.html',)
+
 
 #logout the logged in user   
 def log_out(request):

@@ -23,7 +23,7 @@ class UserAdminConfig(UserAdmin):
     list_filter = ('email','is_active','is_staff','role',)
     list_display = ('id','email','full_name','phone','reg_no','username','role','is_active')
     fieldsets = (
-        (None, {'fields': ('email','full_name','phone','username','reg_no',)}),
+        (None, {'fields': ('email','password','full_name','phone','username','reg_no',)}),
         ("Permissions", {"fields" :('is_staff','is_active','is_superuser',)}),
         ("Personal", {"fields":("role","profile_pic")}),
     )

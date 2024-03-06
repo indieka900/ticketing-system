@@ -4,9 +4,13 @@ from django.contrib.auth.decorators import login_required
 from services.models import (Complaint,Feedback,Department)
 
 @login_required
-def home(request):
-    
-    complaints = Complaint.objects.filter(sender = request.user)
+def home(request,type):
+    complaints = ''
+    if type=='student':
+        complaints = Complaint.objects.filter(sender = request.user)
+    elif type == 'chair':
+        dep = Department.objects.get(chairperson=request.user)
+        complaints = Complaint.objects.filter(department = dep)
     departments = Department.objects.all()
     
     solved_tickets = complaints.filter(status='Solved')
@@ -20,7 +24,7 @@ def home(request):
             complaint = Complaint.objects.get(pk=id)
             complaint.status = 'Solved'
             complaint.save()
-            return redirect('services:homepage')
+            return redirect(f'/home/{type}/')
             #success message
             
         if 'transfer' in request.POST:
@@ -31,7 +35,7 @@ def home(request):
             print(department)
             complaint.department = depart
             complaint.save()
-            return redirect('services:homepage')
+            return redirect(f'/home/{type}/')
         
         if 'create-comp' in request.POST:
             department = request.POST.get('department')
@@ -43,7 +47,7 @@ def home(request):
             else:
                 complaint = Complaint(sender = request.user, message=problem, department=depart)
             complaint.save()
-            return redirect('services:homepage')
+            return redirect(f'/home/{type}/')
             #success message
     
     context = {
