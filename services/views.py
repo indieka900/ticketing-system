@@ -55,7 +55,7 @@ def home(request,type):
         'solved':solved_tickets,
         'pending':pending_tickets,
         'departments' : departments,
-        'form':f,
+        'type':type,
     }
     
     return render(request, 'app/index.html', context)
