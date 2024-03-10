@@ -1,45 +1,94 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block style %}
+<style>
+  .message-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
 
+  .message {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
 
-{% block body %}
+  .image {
+    max-width: 100%;
+    max-height: 300px;
+  }
+
+  .file-container {
+    margin-top: 10px;
+  }
+</style>
+{% endblock %} {% block body %}
 <section class="dashboard">
-    <div class="top">
-        <i class="uil uil-bars sidebar-toggle"></i>
+  <div class="top">
+    <i class="uil uil-bars sidebar-toggle"></i>
 
+    <span class="logo_name">
+      <h1>ICT SUPPORT TICKETING SYSTEM</h1>
+    </span>
 
-        <span class="logo_name">
-            <h1> ICT SUPPORT TICKETING SYSTEM</h1>
-        </span>
-
-        <div>
-            <a href="#D0" class="notification">
-                <span>Tickets</span>
-                <span id="mydiv" class="badge">2</span>
-            </a>
-        </div>
-
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
+    <div>
+      <a href="#D0" class="notification">
+        <span>Tickets</span>
+        <span id="mydiv" class="badge">2</span>
+      </a>
     </div>
-    <ul class="tab-content">
-        <li id="D0">
-            <div class="dash-content">
-                <div class="overview">
-                    <div class="title">
-                        <i class="uil uil-clock-three"></i>
-                        <span class="text">Recent Activity</span>
-                    </div>
-                    <h2>{{ complaint.message }}</h2>
-                    <iframe src="https://docs.google.com/gview?url={{complaint.file}}&embedded=true"
-                        style="width:200px; height:250px;" frameborder="0"></iframe>
 
-                </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </div>
+  <ul class="tab-content">
+    <li id="D0">
+      <div class="dash-content">
+        <div class="overview">
+          <div class="title">
+            <i class="uil uil-clock-three"></i>
+            <span class="text">Recent Activity</span>
+          </div>
+          <h2>{{ complaint.message }}</h2>
+        </div>
+      </div>
 
-            </div>
+      <div class="message-container">
+        <div class="message">
+          <p>{{ complaint.sender.username }}:</p>
+          <p>{{ complaint.text }}</p>
 
-        </li>
-    </ul>
+          {% if complaint.file %} {% if file_type == "Image" %}
+          <img src="{{ complaint.file.url }}" alt="Image" class="image" />
+          {% elif file_type == "Word Document" %}
+          <p>
+            This is a Word Document:
+            <a href="{{ complaint.file.url }}" target="_blank"
+              >Document </a
+            >
+          </p>
+          {% elif file_type == "PDF" %}
+          <p>
+            This is a PDF:
+            <a href="{{ complaint.file.url }}" target="_blank"
+              >PDF </a
+            >
+          </p>
+          {% else %}
+          <p>Unsupported file type: {{ file_type }}</p>
+          {% endif %} {% endif %}
+        </div>
+      </div>
 
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="complaint">complaint:</label>
+        <input type="text" name="message" required />
+
+        <label for="file">File:</label>
+        <input type="file" name="file" />
+
+        <button type="submit">Send</button>
+      </form>
+    </li>
+  </ul>
 </section>
 {% endblock body %}

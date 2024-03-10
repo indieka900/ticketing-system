@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, redirect
 from .forms import CreateComplaintForm
 from django.contrib.auth.decorators import login_required
@@ -60,11 +61,32 @@ def home(request,type):
     
     return render(request, 'app/index.html', context)
 
+
+def get_file_type(filename):
+        ext = os.path.splitext(filename)[-1].lower()
+        if ext == ".jpg" or ext == ".jpeg" or ext == ".png":
+            return "Image"
+        elif ext == ".docx" or ext == ".doc":
+            return "Word Document"
+        elif ext == ".pdf":
+            return "PDF"
+        else:
+            return "Unknown"
+
 @login_required
 def viewComp(request, pk):
     complaint = Complaint.objects.get(pk=pk)
+    
+    filename = ""
+    if complaint.file:
+        filename = filename = os.path.basename(complaint.file.name) 
+        print(filename)
+    file_type = get_file_type(filename)
+    print(file_type)
+    print(f"{filename} is a {file_type}.")
     context = {
         'complaint': complaint,
+        'file_type' : file_type,
     }
     return render(request, 'app/complaint.html', context)
 
