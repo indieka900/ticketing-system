@@ -10,6 +10,17 @@ from accounts.models import MyUser
 
 register = template.Library()
 
+def common(user : MyUser):
+    typ = 'chair'
+    if user.role == 'Student':
+        typ = 'student'
+    return {
+        'feedback_l': Feedback.objects.filter(reciever = user, read = False),
+        'typ' : typ,
+        # 'pages': Page.objects.all(),
+        # 'nav': pageName,
+    }
+
 @login_required
 def home(request,type):
     complaints = ''
@@ -63,6 +74,7 @@ def home(request,type):
         'pending':pending_tickets,
         'departments' : departments,
         'type':type,
+        **common(request.user),
     }
     
     return render(request, 'app/index.html', context)
@@ -91,6 +103,7 @@ def viewComp(request, pk):
     context = {
         'complaint': complaint,
         'file_type' : file_type,
+        **common(request.user),
     }
     return render(request, 'app/complaint.html', context)
 
@@ -110,6 +123,10 @@ def viewFeebacks(request, pk):
             form.instance.complaint = complaint
             if not isinstance(request.user, MyUser):
                 return HttpResponse("Unauthorized", status=401)
+            if request.user == complaint.sender:
+                form.instance.reciever = complaint.department.chairperson
+            else:
+                form.instance.reciever = complaint.sender
             form.instance.sender = request.user
             form.save()
             return redirect(f'/feedbacks/{pk}/')
@@ -117,6 +134,7 @@ def viewFeebacks(request, pk):
     context = {
         'complaint': complaint,
         'feedbacks': feedbacks,
+        **common(request.user),
     }
     return render(request, 'app/feedbacks.html', context)
 

@@ -61,12 +61,12 @@
                             <span class="link-name">{{user.username}}</span>
                         </a>
                     </li>
-                    <li><a href="#D0" class="active">
+                    <li><a href="/home/{{typ}}/#D0" class="active">
                             <i class="uil uil-estate"></i>
                             <span class="link-name">Dashboard</span>
                         </a>
                     </li>
-                    <li><a href="#D2">
+                    <li><a href="/home/{{typ}}/#D2">
                             <i class="uil uil-files-landscapes"></i>
                             <span class="link-name">Tickets</span>
                         </a>
@@ -107,14 +107,50 @@
         </div>
         {% endfor %}
         {% endif %}
+        <section class="dashboard">
+
+            <div class="top">
+                <i class="uil uil-bars sidebar-toggle"></i>
+        
+        
+                <span class="logo_name">
+                    <h1> ICT SUPPORT TICKETING SYSTEM</h1>
+                </span>
+        
+                <!-- {% if messages %}
+                {% for message in messages %}
+                <div class="mb-3 alert alert-success text-center">
+                    {{message}}
+                </div>
+                {% endfor %}
+                {% endif %} -->
+        
+                <!-- <div class="search-box">
+                        <i class="uil uil-search"></i>
+                        <input type="text" placeholder="Search here...">
+                    </div> -->
+        
+                <div>
+                    <a href="#D0" class="notification">
+                        <span>Tickets</span>
+                        <span id="mydiv" class="badge">{{feedback_l|length}}</span>
+                    </a>
+                </div>
+        
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+        
+            </div>
 
 
         {% block body %}
 
         {% endblock body %}
+        
+    </section>
         <footer>
             <center>
-                <!-- <a href="http://www.ict.go.ke">Ministry of Information, Communications and The Digital Economy</a> -->
+                <a href="https://github.com/indieka900">Created by Joseph I</a>
                 <P>Copyright &copy; 2019 -
                     <script>document.write(new Date().getFullYear())</script>
                 </P>

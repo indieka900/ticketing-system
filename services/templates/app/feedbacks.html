@@ -65,26 +65,16 @@
     .unread-icon {
         color: red;  /* Color for unread messages */
     }
+    svg {
+        width: 50px;
+        height: 30px;
+        padding: 0px;
+        margin: 0px;
+    }
 </style>
 {% endblock %} {% block body %}
 {% load my_filters %}
-<section class="dashboard">
-    <div class="top">
-        <i class="uil uil-bars sidebar-toggle"></i>
 
-        <span class="logo_name">
-            <h1>ICT SUPPORT TICKETING SYSTEM</h1>
-        </span>
-
-        <div>
-            <a href="#D0" class="notification">
-                <span>Tickets</span>
-                <span id="mydiv" class="badge">2</span>
-            </a>
-        </div>
-
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    </div>
     <ul class="tab-content">
         <li id="D0">
             <div class="dash-content">
@@ -103,10 +93,15 @@
                     <p> <span class="sender-name">{% if user == message.sender %} You 
                         {% else %} {{ message.sender.username|capfirst }} 
                         {% endif %} </span>: {{message.date_posted|timesince}} ago.
-                        {% if feedback.read %}
-                        <span class="read-icon">&#10004;</span>  <!-- Tick icon for read messages -->
+                        {% if not message.read %}
+                        <span class="read-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#011230" class="color000000 svgShape"></path></svg>
+
+                        </span>  <!-- Tick icon for read messages -->
                         {% else %}
-                            <span class="unread-icon">&#10008;</span>  <!-- Double tick icon for unread messages -->
+                        <span class="read-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#34a853" class="color000000 svgShape"></path></svg>
+                        </span>  
                         {% endif %}
                     </p>
                     <p class="message-text">{{ message.message }}</p>
@@ -138,17 +133,6 @@
                 </div>
                 {% endfor %}
             </div>
-
-            <!-- <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label for="complaint">complaint:</label>
-        <input type="text" name="message" required />
-
-        <label for="file">File:</label>
-        <input type="file" name="file" />
-
-        <button type="submit">Send</button>
-      </form> -->
             <div class="activity">
                 <div class="activity-data">
                     <div class="complaint" id="ticket">
@@ -174,7 +158,6 @@
             </div>
         </li>
     </ul>
-</section>
 
 <script>
     // Scroll to the bottom of the message container
