@@ -1,5 +1,4 @@
 import random
-# from accounts.confirmation_email import send_activation_email, send_reset_password_email
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
@@ -8,7 +7,6 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from accounts.models import MyUser
-# from rental_app.models import RoomType
 from django.views.generic import CreateView,View
 from django.utils.encoding import force_str  
 from django.utils.http import urlsafe_base64_decode 
@@ -143,6 +141,11 @@ def changePassword(request):
 
 #login user 
 def login_user(request):
+    if request.user.is_authenticated:
+        if request.user.role == "Student":
+            return redirect('services:homepage', type='student')
+        else:
+            return redirect('services:homepage', type='chair')
     user = ''
     if request.method == 'POST':
         if 'students' in request.POST:
