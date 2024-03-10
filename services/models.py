@@ -25,7 +25,9 @@ class Complaint(models.Model):
     sender = models.ForeignKey(MyUser, related_name='Sender', on_delete=models.CASCADE)
 
 class Feedback(models.Model):
+    sender = models.ForeignKey(MyUser, related_name='feedback', on_delete=models.CASCADE)
     complaint = models.ForeignKey(Complaint, related_name='Complaint', on_delete=models.CASCADE)
+    read = models.BooleanField(default=False)
     message = models.TextField()
     file = models.FileField(upload_to='Feedbacks', blank=True, null=True)
     date_posted = models.DateTimeField(auto_now_add=True)

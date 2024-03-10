@@ -55,10 +55,9 @@
         {% for message in feedbacks %}
         <div class="message">
             <p>{{ message.sender.username }}:</p>
-            <p>{{ message.text }}</p>
+            <p>{{ message.message }}</p>
             
             {% if message.file %}
-                {% with file_type=message.file|file_type %}
                     {% if file_type == "Image" %}
                         <img src="{{ message.file.url }}" alt="Image" class="image">
                     {% elif file_type == "Word Document" %}
@@ -73,7 +72,6 @@
                     {% else %}
                         <p>Unsupported file type: {{ file_type }}</p>
                     {% endif %}
-                {% endwith %}
             {% endif %}
         </div>
         {% endfor %}
@@ -98,22 +96,13 @@
                     <center>
                         <h3>Fill in the user support form</h3>
                     </center>
-                    <select class="department" name="department"
-                        style=" padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer; margin-bottom: 10px; margin-left: 10px;"
-                        required>
-                        <option value="" disabled selected>Select Department</option>
-                        {% for department in departments %}
-                        <option value={{department.id}}>
-                            {{department.department_name}}
-                        </option>
-                        {% endfor %}
-                    </select>
-                    <textarea  name="problemDetail" id="descr" cols="30" rows="10"
-                        placeholder="PROBLEM DESCRIPTION"></textarea>
+                    
+                    <textarea  name="message" id="descr" cols="30" rows="3"
+                        placeholder="Write FeedBack"></textarea>
 
 
                     <label for="myfile">Select a file:</label>
-                    <input type="file" id="myfile" name="myfile">
+                    <input type="file" id="myfile" name="file">
                     <center>
                         <button type="submit" name="create-comp">Submit</button>
                     </center>

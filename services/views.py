@@ -1,8 +1,11 @@
 import os
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
-from .forms import CreateComplaintForm
+from .forms import CreateComplaintForm, CreateFeedbackForm
 from django.contrib.auth.decorators import login_required
 from services.models import (Complaint,Feedback,Department)
+from accounts.models import MyUser
 
 @login_required
 def home(request,type):
@@ -89,7 +92,7 @@ def viewComp(request, pk):
 
 @login_required
 def viewFeebacks(request, pk):
-    complaint = Complaint.objects.get(pk=pk)
+    complaint = get_object_or_404(Complaint, pk=pk)
     feedbacks = Feedback.objects.filter(complaint=complaint)
     
     filename = ""
@@ -98,8 +101,21 @@ def viewFeebacks(request, pk):
         print(filename)
     file_type = get_file_type(filename)
     
+    if request.method == 'POST':
+        form = CreateFeedbackForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.instance.complaint = complaint
+            if not isinstance(request.user, MyUser):
+            # Handle the case where request.user is not a MyUser instance
+            # You might want to redirect the user to the login page or handle it appropriately
+                return HttpResponse("Unauthorized", status=401)
+            form.instance.sender = request.user
+            form.save()
+            return redirect(f'/feedbacks/{pk}/')
+    
     context = {
         'complaint': complaint,
+        'feedbacks': feedbacks,
         'file_type' : file_type,
     }
     return render(request, 'app/feedbacks.html', context)
