@@ -1,11 +1,14 @@
 import os
 from django.http import HttpResponse
+from django import template
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from .forms import CreateComplaintForm, CreateFeedbackForm
 from django.contrib.auth.decorators import login_required
 from services.models import (Complaint,Feedback,Department)
 from accounts.models import MyUser
+
+register = template.Library()
 
 @login_required
 def home(request,type):
@@ -64,17 +67,18 @@ def home(request,type):
     
     return render(request, 'app/index.html', context)
 
-
+@register.filter(name='get_file_type')
 def get_file_type(filename):
-        ext = os.path.splitext(filename)[-1].lower()
-        if ext == ".jpg" or ext == ".jpeg" or ext == ".png":
-            return "Image"
-        elif ext == ".docx" or ext == ".doc":
-            return "Word Document"
-        elif ext == ".pdf":
-            return "PDF"
-        else:
-            return "Unknown"
+    ext = os.path.splitext(filename)[-1].lower()
+    if ext in {".jpg", ".jpeg", ".png"}:
+        return "Image"
+    elif ext in {".docx", ".doc"}:
+        return "Word Document"
+    elif ext == ".pdf":
+        return "PDF"
+    else:
+        return "Unknown"
+register.filter(name='get_file_type')
 
 @login_required
 def viewComp(request, pk):
@@ -106,8 +110,6 @@ def viewFeebacks(request, pk):
         if form.is_valid():
             form.instance.complaint = complaint
             if not isinstance(request.user, MyUser):
-            # Handle the case where request.user is not a MyUser instance
-            # You might want to redirect the user to the login page or handle it appropriately
                 return HttpResponse("Unauthorized", status=401)
             form.instance.sender = request.user
             form.save()

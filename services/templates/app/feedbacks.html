@@ -1,83 +1,91 @@
 {% extends "base.html" %} {% block style %}
 <style>
-  .message-container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-  }
+    .message-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+    }
 
-  .message {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-  }
+    .message {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
 
-  .image {
-    max-width: 100%;
-    max-height: 300px;
-  }
+    .image {
+        max-width: 100%;
+        max-height: 300px;
+    }
 
-  .file-container {
-    margin-top: 10px;
-  }
+    .file-container {
+        margin-top: 10px;
+    }
 </style>
 {% endblock %} {% block body %}
+{% load my_filters %}
 <section class="dashboard">
-  <div class="top">
-    <i class="uil uil-bars sidebar-toggle"></i>
+    <div class="top">
+        <i class="uil uil-bars sidebar-toggle"></i>
 
-    <span class="logo_name">
-      <h1>ICT SUPPORT TICKETING SYSTEM</h1>
-    </span>
+        <span class="logo_name">
+            <h1>ICT SUPPORT TICKETING SYSTEM</h1>
+        </span>
 
-    <div>
-      <a href="#D0" class="notification">
-        <span>Tickets</span>
-        <span id="mydiv" class="badge">2</span>
-      </a>
+        <div>
+            <a href="#D0" class="notification">
+                <span>Tickets</span>
+                <span id="mydiv" class="badge">2</span>
+            </a>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     </div>
+    <ul class="tab-content">
+        <li id="D0">
+            <div class="dash-content">
+                <div class="overview">
+                    <div class="title">
+                        <i class="uil uil-clock-three"></i>
+                        <span class="text">Recent Activity</span>
+                    </div>
+                    <h2>{{ complaint.message }}</h2>
+                </div>
+            </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  </div>
-  <ul class="tab-content">
-    <li id="D0">
-      <div class="dash-content">
-        <div class="overview">
-          <div class="title">
-            <i class="uil uil-clock-three"></i>
-            <span class="text">Recent Activity</span>
-          </div>
-          <h2>{{ complaint.message }}</h2>
-        </div>
-      </div>
+            <div class="message-container">
+                {% for message in feedbacks %}
+                <div class="message">
+                    <p>
+                        {% if user == message.sender %} You 
+                        {% else %} {{ message.sender.username }} 
+                        {% endif %} :
+                    </p>
+                    <p>{{ message.message }}</p>
 
-      <div class="message-container">
-        {% for message in feedbacks %}
-        <div class="message">
-            <p>{{ message.sender.username }}:</p>
-            <p>{{ message.message }}</p>
-            
-            {% if message.file %}
+                    {% with file_type=message.file.name|get_file_type %} 
                     {% if file_type == "Image" %}
-                        <img src="{{ message.file.url }}" alt="Image" class="image">
+                    <img src="{{ message.file.url }}" alt="Image" class="image" />
                     {% elif file_type == "Word Document" %}
-                        <div class="file-container">
-                            <p>This is a Word Document: <a href="{{ message.file.url }}" target="_blank">{{ message.file.name }}</a></p>
-                        </div>
+                    <div class="file-container">
+                        <p>
+                            This is a Word Document:
+                            <a href="{{ message.file.url }}" target="_blank">{{ message.file.name }}</a>
+                        </p>
+                    </div>
                     {% elif file_type == "PDF" %}
-                        <div class="file-container">
-                            <embed src="{{ message.file.url }}" type="application/pdf" width="100%" height="500px">
-                            <p><a href="{{ message.file.url }}" target="_blank">Download PDF</a></p>
-                        </div>
+                    <div class="file-container">
+                        <p>
+                            <a href="{{ message.file.url }}" target="_blank">View PDF</a>
+                        </p>
+                    </div>
                     {% else %}
-                        <p>Unsupported file type: {{ file_type }}</p>
-                    {% endif %}
-            {% endif %}
-        </div>
-        {% endfor %}
-      </div>
+                    <p>Unsupported file type: {{ file_type }}</p>
+                    {% endif %} {% endwith %}
+                </div>
+                {% endfor %}
+            </div>
 
-      <!-- <form method="post" enctype="multipart/form-data">
+            <!-- <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <label for="complaint">complaint:</label>
         <input type="text" name="message" required />
@@ -87,34 +95,30 @@
 
         <button type="submit">Send</button>
       </form> -->
-      <div class="activity">
-        <div class="activity-data">
-            <div class="complaint" id="ticket">
-                <form class="complaintS" method="post" action="" enctype="multipart/form-data" name="complaintS" >
-                    {% csrf_token %}
-                    <!--<form class="complaintS" name="complaintS" onsubmit="return submitResult();"> -->
-                    <center>
-                        <h3>Fill in the user support form</h3>
-                    </center>
-                    
-                    <textarea  name="message" id="descr" cols="30" rows="3"
-                        placeholder="Write FeedBack"></textarea>
+            <div class="activity">
+                <div class="activity-data">
+                    <div class="complaint" id="ticket">
+                        <form class="complaintS" method="post" action="" enctype="multipart/form-data"
+                            name="complaintS">
+                            {% csrf_token %}
+                            <!--<form class="complaintS" name="complaintS" onsubmit="return submitResult();"> -->
+                            <center>
+                                <h3>Fill in the user support form</h3>
+                            </center>
 
+                            <textarea name="message" id="descr" cols="30" rows="3"
+                                placeholder="Write FeedBack"></textarea>
 
-                    <label for="myfile">Select a file:</label>
-                    <input type="file" id="myfile" name="file">
-                    <center>
-                        <button type="submit" name="create-comp">Submit</button>
-                    </center>
-                </form>
-
+                            <label for="myfile">Select a file:</label>
+                            <input type="file" id="myfile" name="file" />
+                            <center>
+                                <button type="submit" name="create-comp">Submit</button>
+                            </center>
+                        </form>
+                    </div>
+                </div>
             </div>
-
-
-
-        </div>
-    </div>
-    </li>
-  </ul>
+        </li>
+    </ul>
 </section>
 {% endblock body %}
