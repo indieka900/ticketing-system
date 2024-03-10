@@ -99,11 +99,10 @@ def viewFeebacks(request, pk):
     complaint = get_object_or_404(Complaint, pk=pk)
     feedbacks = Feedback.objects.filter(complaint=complaint)
     
-    filename = ""
-    if complaint.file:
-        filename = filename = os.path.basename(complaint.file.name) 
-        print(filename)
-    file_type = get_file_type(filename)
+    for feedback in feedbacks:
+        if feedback.sender != request.user:
+            feedback.read = True
+            feedback.save()
     
     if request.method == 'POST':
         form = CreateFeedbackForm(request.POST, request.FILES)
@@ -118,7 +117,6 @@ def viewFeebacks(request, pk):
     context = {
         'complaint': complaint,
         'feedbacks': feedbacks,
-        'file_type' : file_type,
     }
     return render(request, 'app/feedbacks.html', context)
 

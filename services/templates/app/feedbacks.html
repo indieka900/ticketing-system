@@ -1,24 +1,69 @@
 {% extends "base.html" %} {% block style %}
 <style>
     .message-container {
-        max-width: 600px;
-        margin: auto;
+        max-width: 600px; /* Set your desired maximum width */
+        margin: 0 auto; /* Center the container horizontally */
         padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow-y: auto; /* Enable vertical scrolling */
+        scroll-behavior: smooth;
     }
 
+
+    /* Styling for sender's name */
+    .message-container {
+        max-width: 85%; /* Set your desired maximum width */
+        margin: 0 auto; /* Center the container horizontally */
+        padding: 20px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow-y: auto; /* Enable vertical scrolling */
+        max-height: 400px; /* Set the maximum height for scrollability */
+    }
+
+    /* Styling for individual messages */
     .message {
-        border: 1px solid #ccc;
+        margin-bottom: 15px;
         padding: 10px;
-        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
     }
 
+    /* Styling for sender's name */
+    .sender-name {
+        font-weight: bold;
+        color: #007bff; /* Blue color for sender's name */
+    }
+
+    /* Styling for message text */
+    .message-text {
+        margin-top: 5px;
+    }
+
+    .file-link {
+        color: #0066cc;  /* Set the color you prefer */
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    .file-link:hover {
+        text-decoration: none;  /* Remove underline on hover if desired */
+    }
+
+    /* Styling for images */
     .image {
-        max-width: 100%;
-        max-height: 300px;
+        max-width: 30%;
+        height: auto;
+    }
+    .read-icon {
+        color: green;  /* Color for read messages */
     }
 
-    .file-container {
-        margin-top: 10px;
+    .unread-icon {
+        color: red;  /* Color for unread messages */
     }
 </style>
 {% endblock %} {% block body %}
@@ -48,39 +93,48 @@
                         <i class="uil uil-clock-three"></i>
                         <span class="text">Recent Activity</span>
                     </div>
-                    <h2>{{ complaint.message }}</h2>
+                    <h2>{{ complaint.message|capfirst  }}</h2>
                 </div>
             </div>
 
-            <div class="message-container">
+            <div class="message-container" id="messageContainer">
                 {% for message in feedbacks %}
                 <div class="message">
-                    <p>
-                        {% if user == message.sender %} You 
-                        {% else %} {{ message.sender.username }} 
-                        {% endif %} :
+                    <p> <span class="sender-name">{% if user == message.sender %} You 
+                        {% else %} {{ message.sender.username|capfirst }} 
+                        {% endif %} </span>: {{message.date_posted|timesince}} ago.
+                        {% if feedback.read %}
+                        <span class="read-icon">&#10004;</span>  <!-- Tick icon for read messages -->
+                        {% else %}
+                            <span class="unread-icon">&#10008;</span>  <!-- Double tick icon for unread messages -->
+                        {% endif %}
                     </p>
-                    <p>{{ message.message }}</p>
+                    <p class="message-text">{{ message.message }}</p>
+                    {% if message.file %}
+                        {% with file_type=message.file.name|get_file_type %} 
+                        {% if file_type == "Image" %}
+                        <a href="{{ message.file.url }}" target="_blank">
+                            <img src="{{ message.file.url }}" alt="Image" class="image" />
+                        </a>
+                        {% elif file_type == "Word Document" %}
+                        <div class="file-container">
+                            <p>
+                                This is a Word Document:
+                                <a class="file-link" href="{{ message.file.url }}" target="_blank">{{ message.file.name }}</a>
+                            </p>
+                        </div>
+                        {% elif file_type == "PDF" %}
+                        <div class="file-container">
+                            <p class="file-link">
+                                <a href="{{ message.file.url }}" target="_blank">View PDF</a>
+                            </p>
+                        </div>
+                        {% else %}
+                        <p>Unsupported file type: {{ file_type }}</p>
+                        {% endif %}
 
-                    {% with file_type=message.file.name|get_file_type %} 
-                    {% if file_type == "Image" %}
-                    <img src="{{ message.file.url }}" alt="Image" class="image" />
-                    {% elif file_type == "Word Document" %}
-                    <div class="file-container">
-                        <p>
-                            This is a Word Document:
-                            <a href="{{ message.file.url }}" target="_blank">{{ message.file.name }}</a>
-                        </p>
-                    </div>
-                    {% elif file_type == "PDF" %}
-                    <div class="file-container">
-                        <p>
-                            <a href="{{ message.file.url }}" target="_blank">View PDF</a>
-                        </p>
-                    </div>
-                    {% else %}
-                    <p>Unsupported file type: {{ file_type }}</p>
-                    {% endif %} {% endwith %}
+                        {% endwith %}
+                    {% endif %} 
                 </div>
                 {% endfor %}
             </div>
@@ -121,4 +175,10 @@
         </li>
     </ul>
 </section>
+
+<script>
+    // Scroll to the bottom of the message container
+    var messageContainer = document.getElementById('messageContainer');
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+</script>
 {% endblock body %}

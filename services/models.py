@@ -31,5 +31,8 @@ class Feedback(models.Model):
     message = models.TextField()
     file = models.FileField(upload_to='Feedbacks', blank=True, null=True)
     date_posted = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.sender} to {self.complaint.sender}"
 
 # Create your models here.

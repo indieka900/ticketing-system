@@ -13,6 +13,8 @@ def book_rooms(modeladmin, request, queryset):
 @admin.action(description="Unbook selected rooms")
 def unbook_rooms(modeladmin, request, queryset):
     queryset.update(booked=False)
+    
+admin.site.register(Feedback)
 
 @admin.register(Complaint)
 class ComplaintAdmin(admin.ModelAdmin):
