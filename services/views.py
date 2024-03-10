@@ -80,14 +80,28 @@ def viewComp(request, pk):
     filename = ""
     if complaint.file:
         filename = filename = os.path.basename(complaint.file.name) 
-        print(filename)
     file_type = get_file_type(filename)
-    print(file_type)
-    print(f"{filename} is a {file_type}.")
     context = {
         'complaint': complaint,
         'file_type' : file_type,
     }
     return render(request, 'app/complaint.html', context)
+
+@login_required
+def viewFeebacks(request, pk):
+    complaint = Complaint.objects.get(pk=pk)
+    feedbacks = Feedback.objects.filter(complaint=complaint)
+    
+    filename = ""
+    if complaint.file:
+        filename = filename = os.path.basename(complaint.file.name) 
+        print(filename)
+    file_type = get_file_type(filename)
+    
+    context = {
+        'complaint': complaint,
+        'file_type' : file_type,
+    }
+    return render(request, 'app/feedbacks.html', context)
 
 # Create your views here.

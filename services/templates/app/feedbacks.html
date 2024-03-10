@@ -1,0 +1,131 @@
+{% extends "base.html" %} {% block style %}
+<style>
+  .message-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
+
+  .message {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .image {
+    max-width: 100%;
+    max-height: 300px;
+  }
+
+  .file-container {
+    margin-top: 10px;
+  }
+</style>
+{% endblock %} {% block body %}
+<section class="dashboard">
+  <div class="top">
+    <i class="uil uil-bars sidebar-toggle"></i>
+
+    <span class="logo_name">
+      <h1>ICT SUPPORT TICKETING SYSTEM</h1>
+    </span>
+
+    <div>
+      <a href="#D0" class="notification">
+        <span>Tickets</span>
+        <span id="mydiv" class="badge">2</span>
+      </a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </div>
+  <ul class="tab-content">
+    <li id="D0">
+      <div class="dash-content">
+        <div class="overview">
+          <div class="title">
+            <i class="uil uil-clock-three"></i>
+            <span class="text">Recent Activity</span>
+          </div>
+          <h2>{{ complaint.message }}</h2>
+        </div>
+      </div>
+
+      <div class="message-container">
+        {% for message in feedbacks %}
+        <div class="message">
+            <p>{{ message.sender.username }}:</p>
+            <p>{{ message.text }}</p>
+            
+            {% if message.file %}
+                {% with file_type=message.file|file_type %}
+                    {% if file_type == "Image" %}
+                        <img src="{{ message.file.url }}" alt="Image" class="image">
+                    {% elif file_type == "Word Document" %}
+                        <div class="file-container">
+                            <p>This is a Word Document: <a href="{{ message.file.url }}" target="_blank">{{ message.file.name }}</a></p>
+                        </div>
+                    {% elif file_type == "PDF" %}
+                        <div class="file-container">
+                            <embed src="{{ message.file.url }}" type="application/pdf" width="100%" height="500px">
+                            <p><a href="{{ message.file.url }}" target="_blank">Download PDF</a></p>
+                        </div>
+                    {% else %}
+                        <p>Unsupported file type: {{ file_type }}</p>
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="complaint">complaint:</label>
+        <input type="text" name="message" required />
+
+        <label for="file">File:</label>
+        <input type="file" name="file" />
+
+        <button type="submit">Send</button>
+      </form> -->
+      <div class="activity">
+        <div class="activity-data">
+            <div class="complaint" id="ticket">
+                <form class="complaintS" method="post" action="" enctype="multipart/form-data" name="complaintS" >
+                    {% csrf_token %}
+                    <!--<form class="complaintS" name="complaintS" onsubmit="return submitResult();"> -->
+                    <center>
+                        <h3>Fill in the user support form</h3>
+                    </center>
+                    <select class="department" name="department"
+                        style=" padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer; margin-bottom: 10px; margin-left: 10px;"
+                        required>
+                        <option value="" disabled selected>Select Department</option>
+                        {% for department in departments %}
+                        <option value={{department.id}}>
+                            {{department.department_name}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <textarea  name="problemDetail" id="descr" cols="30" rows="10"
+                        placeholder="PROBLEM DESCRIPTION"></textarea>
+
+
+                    <label for="myfile">Select a file:</label>
+                    <input type="file" id="myfile" name="myfile">
+                    <center>
+                        <button type="submit" name="create-comp">Submit</button>
+                    </center>
+                </form>
+
+            </div>
+
+
+
+        </div>
+    </div>
+    </li>
+  </ul>
+</section>
+{% endblock body %}

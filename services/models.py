@@ -28,6 +28,6 @@ class Feedback(models.Model):
     complaint = models.ForeignKey(Complaint, related_name='Complaint', on_delete=models.CASCADE)
     message = models.TextField()
     file = models.FileField(upload_to='Feedbacks', blank=True, null=True)
-    images = models.ImageField(upload_to='images', blank=True, null=True)
+    date_posted = models.DateTimeField(auto_now_add=True)
 
 # Create your models here.
