@@ -154,7 +154,6 @@ def login_user(request):
             password = request.POST.get('password')
             try:
                 user = MyUser.objects.get(email=email, reg_no=reg_no)
-                print(f'Hello {user.username}')
             except MyUser.DoesNotExist:
                 messages.error(request, 'Email/registration number does not exist!')
                 return redirect('accounts:login')
@@ -177,16 +176,14 @@ def login_user(request):
                 return redirect('accounts:login')
 
         if user is not None:
-            # print(f'Bye {email}')
-            print(f'Hello {user.email}')
             authenticated_user = authenticate(request, email=user.email, password=password)
             if authenticated_user is not None:
                 login(request, authenticated_user)
                 messages.success(request, 'Logged in successfully')
                 if 'students' in request.POST:
-                    return redirect('/home/student/')
+                    return redirect('/home/student/#D0')
                 if 'chair' in request.POST:
-                    return redirect('/home/chair/')
+                    return redirect('/home/chair/#D0')
             else:
                 messages.error(request, 'Incorrect password or account is not activated')
                 return redirect(reverse('accounts:login'))

@@ -113,7 +113,7 @@ def viewFeebacks(request, pk):
     feedbacks = Feedback.objects.filter(complaint=complaint)
     
     for feedback in feedbacks:
-        if feedback.sender != request.user:
+        if feedback.reciever == request.user:
             feedback.read = True
             feedback.save()
     
