@@ -71,6 +71,22 @@
         padding: 0px;
         margin: 0px;
     }
+    .sender {
+        background-color: #0066cc;
+        color: #f9f9f9;
+        align-content: end;
+        text-align: right;
+        justify-self: end;
+        width: 65%;
+        border: #f9f9f9 2px solid;
+        border-radius: 13px;
+    }
+    .reciever {
+        background-color: #0c263f;
+        width: 65%;
+        border: #f9f9f9 2px solid;
+        border-radius: 13px;
+    }
 </style>
 {% endblock %} {% block body %}
 {% load my_filters %}
@@ -89,7 +105,7 @@
 
             <div class="message-container" id="messageContainer">
                 {% for message in feedbacks %}
-                <div class="message">
+                <div class="message {% if user == message.reciever %} reciever {% else %} sender {% endif %}  " >
                     <p> <span class="sender-name">{% if user == message.sender %} You 
                         {% else %} {{ message.sender.username|capfirst }} 
                         {% endif %} </span>: {{message.date_posted|timesince}} ago.
