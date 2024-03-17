@@ -1,15 +1,8 @@
 {% extends "base.html" %} {% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <style>
-    .message-container {
-        max-width: 600px; /* Set your desired maximum width */
-        margin: 0 auto; /* Center the container horizontally */
-        padding: 20px;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        overflow-y: auto; /* Enable vertical scrolling */
-        scroll-behavior: smooth;
-    }
+    
 
 
     /* Styling for sender's name */
@@ -17,7 +10,9 @@
         max-width: 85%; /* Set your desired maximum width */
         margin: 0 auto; /* Center the container horizontally */
         padding: 20px;
-        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        background-color: #f3ededbb;
         border: 1px solid #ddd;
         border-radius: 10px;
         overflow-y: auto; /* Enable vertical scrolling */
@@ -72,19 +67,21 @@
         margin: 0px;
     }
     .sender {
-        background-color: #0066cc;
-        color: #f9f9f9;
+        
         align-content: end;
         text-align: right;
         justify-self: end;
-        width: 65%;
+        align-self: flex-end;
+        background-color: #DCF8C6;
+        max-width: 65%;
         border: #f9f9f9 2px solid;
         border-radius: 13px;
     }
     .reciever {
-        background-color: #0c263f;
-        width: 65%;
-        border: #f9f9f9 2px solid;
+        align-self: flex-start;
+        background-color: #E5E5EA;
+        max-width: 65%;
+        border: 2px #f9f9f9  ridge;
         border-radius: 13px;
     }
 </style>
@@ -111,7 +108,11 @@
                         {% endif %} </span>: {{message.date_posted|timesince}} ago.
                         {% if not message.read %}
                         <span class="read-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#011230" class="color000000 svgShape"></path></svg>
+                            <i class="fa-sharp fa-thin fa-check" style="color: #055bf0;"></i><i class="fa-sharp fa-light fa-check"></i>
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0,0,256,256">
+                                <g fill="#0857ec" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M19.98047,5.99023c-0.2598,0.00774 -0.50638,0.11632 -0.6875,0.30273l-10.29297,10.29297l-3.29297,-3.29297c-0.25082,-0.26124 -0.62327,-0.36647 -0.97371,-0.27511c-0.35044,0.09136 -0.62411,0.36503 -0.71547,0.71547c-0.09136,0.35044 0.01388,0.72289 0.27511,0.97371l4,4c0.39053,0.39037 1.02353,0.39037 1.41406,0l11,-11c0.29576,-0.28749 0.38469,-0.72707 0.22393,-1.10691c-0.16075,-0.37985 -0.53821,-0.62204 -0.9505,-0.60988z"></path></g></g>
+                                </svg> -->
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#011230" class="color000000 svgShape"></path></svg> -->
 
                         </span>  <!-- Tick icon for read messages -->
                         {% else %}
@@ -157,7 +158,7 @@
                             {% csrf_token %}
                             <!--<form class="complaintS" name="complaintS" onsubmit="return submitResult();"> -->
                             <center>
-                                <h3>Fill in the user support form</h3>
+                                <h3>FeedBack Form <i class="fa-sharp fa-light fa-check"></i></h3>
                             </center>
 
                             <textarea name="message" id="descr" cols="30" rows="3"
@@ -166,7 +167,7 @@
                             <label for="myfile">Select a file:</label>
                             <input type="file" id="myfile" name="file" />
                             <center>
-                                <button type="submit" name="create-comp">Submit</button>
+                                <button type="submit" name="create-comp">Send Feedback</button>
                             </center>
                         </form>
                     </div>
