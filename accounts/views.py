@@ -163,11 +163,8 @@ def login_user(request):
             password = request.POST.get('password')
             try:
                 user = MyUser.objects.get(email=email)
-                # user.set_password(password)
-                print(user.username)
                 try:
                     depart = Department.objects.get(chairperson=user)
-                    print(f'Found {depart.department_number}')
                 except Department.DoesNotExist:
                     messages.error(request, 'Error occurred while fetching the department')
                     return redirect('accounts:login')
