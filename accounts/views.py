@@ -159,15 +159,9 @@ def login_user(request):
                 return redirect('accounts:login')
         elif 'chair' in request.POST:
             email = request.POST.get('email')
-            department_no = request.POST.get('department_no')
             password = request.POST.get('password')
             try:
                 user = MyUser.objects.get(email=email)
-                try:
-                    depart = Department.objects.get(chairperson=user)
-                except Department.DoesNotExist:
-                    messages.error(request, 'Error occurred while fetching the department')
-                    return redirect('accounts:login')
             except MyUser.DoesNotExist:
                 messages.error(request, 'Email does not exist!')
                 return redirect('accounts:login')
