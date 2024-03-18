@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from .models import MyUser
+from accounts.models import MyUser
 
 class LoginRegistrationTestCase(TestCase):
     def setUp(self):
@@ -61,8 +61,6 @@ class LoginRegistrationTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(MyUser.objects.filter(email='newuser@example.com').exists())
 
-        # Additional tests for chair registration can be added similarly
-
     def test_invalid_registration(self):
         response = self.client.post(reverse('accounts:sign-up'), {
             'email': 'invalidemail.com',
@@ -71,7 +69,7 @@ class LoginRegistrationTestCase(TestCase):
             'password2': 'password',
             'role': 'Student'
         })
-        self.assertEqual(response.status_code, 200)  # Should stay on the same page
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(MyUser.objects.filter(email='invalidemail.com').exists())
 
         # Additional tests for other invalid cases can be added
