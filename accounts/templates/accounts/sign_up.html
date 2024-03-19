@@ -2,40 +2,43 @@
 {% block title %}Register{% endblock title %}
 {% block act %}Register{% endblock act %}
 {% block content %}
-<form action="" method="POST">
-  {% csrf_token %}
-  
-  <div class="input-box">
-    <input type="text" name="username" placeholder="Enter your username" required>
-  </div>
-  <div class="input-box">
-    <input type="email" name="email" placeholder="Enter your school email" required>
-  </div>
-  <div class="input-box">
-    <input type="text" name="reg_no" placeholder="Enter your Registration Number" required>
-  </div>
-  <div class="input-box">
-    <input type="password" name="password1" placeholder="Create password" required>
-  </div>
-  <div class="input-box">
-    <input type="password" name="password2" placeholder="Confirm password" required>
-  </div>
-  <div class="policy">
-    <input type="checkbox" required>
-    <h3>I accept all terms & condition</h3>
-  </div>
-  <ul>
-    {% for message in messages %}
-    <li>
-      {{message}}
-    </li>
-  </ul>
-  {% endfor %}
-  <div class="input-box button">
-    <input type="Submit" value="Register Now">
-  </div>
-  <div class="text">
-    <h3>Already have an account? <a href="{% url 'accounts:login' %}">Login now</a></h3>
-  </div>
-</form>
+<div class="wrapper">
+  <h2>Registration Page</h2>
+  <form action="" method="POST">
+    {% csrf_token %}
+
+    <div class="input-box">
+      <input type="text" name="username" placeholder="Enter your username" required>
+    </div>
+    <div class="input-box">
+      <input type="email" name="email" placeholder="Enter your school email" required>
+    </div>
+    <div class="input-box">
+      <input type="text" name="reg_no" placeholder="Enter your Registration Number" required>
+    </div>
+    <div class="input-box">
+      <input type="password" name="password1" placeholder="Create password" required>
+    </div>
+    <div class="input-box">
+      <input type="password" name="password2" placeholder="Confirm password" required>
+    </div>
+    <div class="policy">
+      <input type="checkbox" required>
+      <h3>I accept all terms & condition</h3>
+    </div>
+    <ul>
+      {% for message in messages %}
+      <li>
+        {{message}}
+      </li>
+    </ul>
+    {% endfor %}
+    <div class="input-box button">
+      <input type="Submit" value="Register Now">
+    </div>
+    <div class="text">
+      <h3>Already have an account? <a href="{% url 'accounts:login' %}">Login now</a></h3>
+    </div>
+  </form>
+</div>
 {% endblock content %}
