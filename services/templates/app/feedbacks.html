@@ -1,91 +1,58 @@
 {% extends "base.html" %} {% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 <style>
+    /* Styling for sender's name */
+        /* Styling for sender's name */
+        .message-container {
+            max-width: 85%; /* Set your desired maximum width */
+            margin: 0 auto; /* Center the container horizontally */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background-color: #f3ededbb;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow-y: auto; /* Enable vertical scrolling */
+     
+            margin: 0px;
+        }
+        .sender {
     
+            align-content: end;
+            text-align: right;
+            justify-self: end;
+            align-self: flex-end;
+            background-color: #DCF8C6;
+            max-width: 65%;
+            border: #f9f9f9 2px solid;
+            border-radius: 13px;
+        }
+        .reciever {
+            align-self: flex-start;
+            background-color: #E5E5EA;
+            max-width: 65%;
+            border: 2px #f9f9f9  ridge;
+            border-radius: 13px;
+        }
+        .message {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    
+        .image {
+            max-width: 100%;
+            max-height: 300px;
+        }
+    
+        .file-container {
+            margin-top: 10px;
+        }
+    </style>
 
 
-    /* Styling for sender's name */
-    .message-container {
-        max-width: 85%; /* Set your desired maximum width */
-        margin: 0 auto; /* Center the container horizontally */
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        background-color: #f3ededbb;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        overflow-y: auto; /* Enable vertical scrolling */
-        max-height: 400px; /* Set the maximum height for scrollability */
-    }
-
-    /* Styling for individual messages */
-    .message {
-        margin-bottom: 15px;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    /* Styling for sender's name */
-    .sender-name {
-        font-weight: bold;
-        color: #007bff; /* Blue color for sender's name */
-    }
-
-    /* Styling for message text */
-    .message-text {
-        margin-top: 5px;
-    }
-
-    .file-link {
-        color: #0066cc;  /* Set the color you prefer */
-        text-decoration: underline;
-        cursor: pointer;
-    }
-
-    .file-link:hover {
-        text-decoration: none;  /* Remove underline on hover if desired */
-    }
-
-    /* Styling for images */
-    .image {
-        max-width: 30%;
-        height: auto;
-    }
-    .read-icon {
-        color: green;  /* Color for read messages */
-    }
-
-    .unread-icon {
-        color: red;  /* Color for unread messages */
-    }
-    svg {
-        width: 50px;
-        height: 30px;
-        padding: 0px;
-        margin: 0px;
-    }
-    .sender {
-        
-        align-content: end;
-        text-align: right;
-        justify-self: end;
-        align-self: flex-end;
-        background-color: #DCF8C6;
-        max-width: 65%;
-        border: #f9f9f9 2px solid;
-        border-radius: 13px;
-    }
-    .reciever {
-        align-self: flex-start;
-        background-color: #E5E5EA;
-        max-width: 65%;
-        border: 2px #f9f9f9  ridge;
-        border-radius: 13px;
-    }
-</style>
-{% endblock %} {% block body %}
+{% endblock %} 
+{% block body %}
 {% load my_filters %}
 
     <ul class="tab-content">
@@ -117,7 +84,7 @@
                         </span>  <!-- Tick icon for read messages -->
                         {% else %}
                         <span class="read-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#34a853" class="color000000 svgShape"></path></svg>
+                            <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#34a853" class="color000000 svgShape"></path></svg> -->
                         </span>  
                         {% endif %}
                     </p>
