@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django import template
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from .forms import CreateComplaintForm, CreateFeedbackForm
 from django.contrib.auth.decorators import login_required
 from services.models import (Complaint,Feedback,Department)
@@ -15,10 +17,8 @@ def common(user : MyUser):
     if user.role == 'Student':
         typ = 'student'
     return {
-        'feedback_l': Feedback.objects.filter(reciever = user, read = False),
+        'feedback_l': Feedback.objects.filter(receiver = user, read = False),
         'typ' : typ,
-        # 'pages': Page.objects.all(),
-        # 'nav': pageName,
     }
 
 @login_required
@@ -107,16 +107,17 @@ def viewComp(request, pk):
     }
     return render(request, 'app/complaint.html', context)
 
+
+
 @login_required
 def viewFeedbacks(request, pk):
     complaint = get_object_or_404(Complaint, pk=pk)
     feedbacks = Feedback.objects.filter(complaint=complaint)
-    
     for feedback in feedbacks:
         if feedback.receiver == request.user:
             feedback.read = True
             feedback.save()
-    
+
     if request.method == 'POST':
         form = CreateFeedbackForm(request.POST, request.FILES)
         if form.is_valid():
@@ -129,8 +130,22 @@ def viewFeedbacks(request, pk):
                 form.instance.receiver = complaint.sender
             form.instance.sender = request.user
             form.save()
+
+            # Broadcast the new feedback to all connected clients
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f'feedbacks_{pk}',
+                {
+                    'type': 'new_feedback',
+                    'message': form.instance.message,
+                    'sender': form.instance.sender.username,
+                    'receiver': form.instance.receiver.username,
+                    'file': str(form.instance.file) if form.instance.file else None,
+                }
+            )
+
             return redirect(f'/feedbacks/{pk}/')
-    
+
     context = {
         'complaint': complaint,
         'feedbacks': feedbacks,

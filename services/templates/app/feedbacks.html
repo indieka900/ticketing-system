@@ -2,150 +2,199 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
     /* Styling for sender's name */
-        /* Styling for sender's name */
-        .message-container {
-            max-width: 85%; /* Set your desired maximum width */
-            margin: 0 auto; /* Center the container horizontally */
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            background-color: #f3ededbb;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            overflow-y: auto; /* Enable vertical scrolling */
-     
-            margin: 0px;
-        }
-        .sender {
-    
-            align-content: end;
-            text-align: right;
-            justify-self: end;
-            align-self: flex-end;
-            background-color: #DCF8C6;
-            max-width: 65%;
-            border: #f9f9f9 2px solid;
-            border-radius: 13px;
-        }
-        .reciever {
-            align-self: flex-start;
-            background-color: #E5E5EA;
-            max-width: 65%;
-            border: 2px #f9f9f9  ridge;
-            border-radius: 13px;
-        }
-        .message {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-    
-        .image {
-            max-width: 100%;
-            max-height: 300px;
-        }
-    
-        .file-container {
-            margin-top: 10px;
-        }
-    </style>
+    /* Styling for sender's name */
+    .message-container {
+        max-width: 85%;
+        /* Set your desired maximum width */
+        margin: 0 auto;
+        /* Center the container horizontally */
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        background-color: #f3ededbb;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow-y: auto;
+        /* Enable vertical scrolling */
+
+        margin: 0px;
+    }
+
+    .sender {
+
+        align-content: end;
+        text-align: right;
+        justify-self: end;
+        align-self: flex-end;
+        background-color: #DCF8C6;
+        max-width: 65%;
+        border: #f9f9f9 2px solid;
+        border-radius: 13px;
+    }
+
+    .reciever {
+        align-self: flex-start;
+        background-color: #E5E5EA;
+        max-width: 65%;
+        border: 2px #f9f9f9 ridge;
+        border-radius: 13px;
+    }
+
+    .message {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .image {
+        max-width: 100%;
+        max-height: 300px;
+    }
+
+    .file-container {
+        margin-top: 10px;
+    }
+</style>
 
 
-{% endblock %} 
+{% endblock %}
 {% block body %}
 {% load my_filters %}
 
-    <ul class="tab-content">
-        <li id="D0">
-            <div class="dash-content">
-                <div class="overview">
-                    <div class="title">
-                        <i class="uil uil-clock-three"></i>
-                        <span class="text">Recent Activity</span>
-                    </div>
-                    <h2>{{ complaint.message|capfirst  }}</h2>
+<ul class="tab-content">
+    <li id="D0">
+        <div class="dash-content">
+            <div class="overview">
+                <div class="title">
+                    <i class="uil uil-clock-three"></i>
+                    <span class="text">Recent Activity</span>
                 </div>
+                <h2>{{ complaint.message|capfirst }}</h2>
             </div>
+        </div>
 
-            <div class="message-container" id="messageContainer">
-                {% for message in feedbacks %}
-                <div class="message {% if user == message.reciever %} reciever {% else %} sender {% endif %}  " >
-                    <p> <span class="sender-name">{% if user == message.sender %} You 
-                        {% else %} {{ message.sender.username|capfirst }} 
+        <div class="message-container" id="messageContainer">
+            {% for message in feedbacks %}
+            <div class="message {% if user == message.reciever %} reciever {% else %} sender {% endif %}  ">
+                <p> <span class="sender-name">{% if user == message.sender %} You
+                        {% else %} {{ message.sender.username|capfirst }}
                         {% endif %} </span>: {{message.date_posted|timesince}} ago.
-                        {% if not message.read %}
-                        <span class="read-icon">
-                            <i class="fa-sharp fa-thin fa-check" style="color: #055bf0;"></i><i class="fa-sharp fa-light fa-check"></i>
-                            <!-- <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0,0,256,256">
+                    {% if not message.read %}
+                    <span class="read-icon">
+                        <i class="fa-sharp fa-thin fa-check" style="color: #055bf0;"></i><i
+                            class="fa-sharp fa-light fa-check"></i>
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0,0,256,256">
                                 <g fill="#0857ec" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M19.98047,5.99023c-0.2598,0.00774 -0.50638,0.11632 -0.6875,0.30273l-10.29297,10.29297l-3.29297,-3.29297c-0.25082,-0.26124 -0.62327,-0.36647 -0.97371,-0.27511c-0.35044,0.09136 -0.62411,0.36503 -0.71547,0.71547c-0.09136,0.35044 0.01388,0.72289 0.27511,0.97371l4,4c0.39053,0.39037 1.02353,0.39037 1.41406,0l11,-11c0.29576,-0.28749 0.38469,-0.72707 0.22393,-1.10691c-0.16075,-0.37985 -0.53821,-0.62204 -0.9505,-0.60988z"></path></g></g>
                                 </svg> -->
-                            <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#011230" class="color000000 svgShape"></path></svg> -->
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#011230" class="color000000 svgShape"></path></svg> -->
 
-                        </span>  <!-- Tick icon for read messages -->
-                        {% else %}
-                        <span class="read-icon">
-                            <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#34a853" class="color000000 svgShape"></path></svg> -->
-                        </span>  
-                        {% endif %}
+                    </span> <!-- Tick icon for read messages -->
+                    {% else %}
+                    <span class="read-icon">
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#34a853" class="color000000 svgShape"></path></svg> -->
+                    </span>
+                    {% endif %}
+                </p>
+                <p class="message-text">{{ message.message }}</p>
+                {% if message.file %}
+                {% with file_type=message.file.name|get_file_type %}
+                {% if file_type == "Image" %}
+                <a href="{{ message.file.url }}" target="_blank">
+                    <img src="{{ message.file.url }}" alt="Image" class="image" />
+                </a>
+                {% elif file_type == "Word Document" %}
+                <div class="file-container">
+                    <p>
+                        This is a Word Document:
+                        <a class="file-link" href="{{ message.file.url }}" target="_blank">{{ message.file.name }}</a>
                     </p>
-                    <p class="message-text">{{ message.message }}</p>
-                    {% if message.file %}
-                        {% with file_type=message.file.name|get_file_type %} 
-                        {% if file_type == "Image" %}
-                        <a href="{{ message.file.url }}" target="_blank">
-                            <img src="{{ message.file.url }}" alt="Image" class="image" />
-                        </a>
-                        {% elif file_type == "Word Document" %}
-                        <div class="file-container">
-                            <p>
-                                This is a Word Document:
-                                <a class="file-link" href="{{ message.file.url }}" target="_blank">{{ message.file.name }}</a>
-                            </p>
-                        </div>
-                        {% elif file_type == "PDF" %}
-                        <div class="file-container">
-                            <p class="file-link">
-                                <a href="{{ message.file.url }}" target="_blank">View PDF</a>
-                            </p>
-                        </div>
-                        {% else %}
-                        <p>Unsupported file type: {{ file_type }}</p>
-                        {% endif %}
-
-                        {% endwith %}
-                    {% endif %} 
                 </div>
-                {% endfor %}
+                {% elif file_type == "PDF" %}
+                <div class="file-container">
+                    <p class="file-link">
+                        <a href="{{ message.file.url }}" target="_blank">View PDF</a>
+                    </p>
+                </div>
+                {% else %}
+                <p>Unsupported file type: {{ file_type }}</p>
+                {% endif %}
+
+                {% endwith %}
+                {% endif %}
             </div>
-            <div class="activity">
-                <div class="activity-data">
-                    <div class="complaint" id="ticket">
-                        <form class="complaintS" method="post" action="" enctype="multipart/form-data"
-                            name="complaintS">
-                            {% csrf_token %}
-                            <!--<form class="complaintS" name="complaintS" onsubmit="return submitResult();"> -->
-                            <center>
-                                <h3>FeedBack Form <i class="fa-sharp fa-light fa-check"></i></h3>
-                            </center>
+            {% endfor %}
+        </div>
+        <div class="activity">
+            <div class="activity-data">
+                <div class="complaint" id="ticket">
+                    <form class="complaintS" method="post" action="" enctype="multipart/form-data" name="complaintS">
+                        {% csrf_token %}
+                        <!--<form class="complaintS" name="complaintS" onsubmit="return submitResult();"> -->
+                        <center>
+                            <h3>FeedBack Form <i class="fa-sharp fa-light fa-check"></i></h3>
+                        </center>
 
-                            <textarea name="message" id="descr" cols="30" rows="3"
-                                placeholder="Write FeedBack"></textarea>
+                        <textarea name="message" id="descr" cols="30" rows="3" placeholder="Write FeedBack"></textarea>
 
-                            <label for="myfile">Select a file:</label>
-                            <input type="file" id="myfile" name="file" />
-                            <center>
-                                <button type="submit" name="create-comp">Send Feedback</button>
-                            </center>
-                        </form>
-                    </div>
+                        <label for="myfile">Select a file:</label>
+                        <input type="file" id="myfile" name="file" />
+                        <center>
+                            <button type="submit" name="create-comp">Send Feedback</button>
+                        </center>
+                    </form>
                 </div>
             </div>
-        </li>
-    </ul>
+        </div>
+    </li>
+</ul>
 
 <script>
     // Scroll to the bottom of the message container
     var messageContainer = document.getElementById('messageContainer');
     messageContainer.scrollTop = messageContainer.scrollHeight;
+    const socket = new WebSocket(`ws://${window.location.host}/ws/feedbacks/${complaint_id}/`);
+
+    socket.onopen = function (e) {
+        console.log("WebSocket connection established.");
+    };
+
+    socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        if (data.sender === username) {
+            messageElement.classList.add('sender');
+        } else {
+            messageElement.classList.add('receiver');
+        }
+
+        const senderName = document.createElement('span');
+        senderName.classList.add('sender-name');
+        senderName.textContent = data.sender;
+
+        const messageText = document.createElement('p');
+        messageText.textContent = data.message;
+
+        if (data.file) {
+            const fileElement = document.createElement('div');
+            fileElement.classList.add('file-container');
+            const fileLink = document.createElement('a');
+            fileLink.classList.add('file-link');
+            fileLink.href = data.file;
+            fileLink.target = '_blank';
+            fileLink.textContent = 'View File';
+            fileElement.appendChild(fileLink);
+            messageElement.appendChild(fileElement);
+        }
+
+        messageElement.appendChild(senderName);
+        messageElement.appendChild(messageText);
+        document.getElementById('messageContainer').appendChild(messageElement);
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+    };
+
+    socket.onclose = function (event) {
+        console.log("WebSocket connection closed.");
+    };
 </script>
 {% endblock body %}
