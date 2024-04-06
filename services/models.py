@@ -26,7 +26,7 @@ class Complaint(models.Model):
 
 class Feedback(models.Model):
     sender = models.ForeignKey(MyUser, related_name='feedback', on_delete=models.CASCADE)
-    reciever = models.ForeignKey(MyUser, related_name='reciever', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(MyUser, related_name='reciever', on_delete=models.CASCADE)
     complaint = models.ForeignKey(Complaint, related_name='Complaint', on_delete=models.CASCADE)
     read = models.BooleanField(default=False)
     message = models.TextField()
@@ -34,6 +34,6 @@ class Feedback(models.Model):
     date_posted = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"{self.sender} to {self.reciever}"
+        return f"{self.sender} to {self.receiver}"
 
 # Create your models here.

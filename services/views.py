@@ -108,12 +108,12 @@ def viewComp(request, pk):
     return render(request, 'app/complaint.html', context)
 
 @login_required
-def viewFeebacks(request, pk):
+def viewFeedbacks(request, pk):
     complaint = get_object_or_404(Complaint, pk=pk)
     feedbacks = Feedback.objects.filter(complaint=complaint)
     
     for feedback in feedbacks:
-        if feedback.reciever == request.user:
+        if feedback.receiver == request.user:
             feedback.read = True
             feedback.save()
     
@@ -124,9 +124,9 @@ def viewFeebacks(request, pk):
             if not isinstance(request.user, MyUser):
                 return HttpResponse("Unauthorized", status=401)
             if request.user == complaint.sender:
-                form.instance.reciever = complaint.department.chairperson
+                form.instance.receiver = complaint.department.chairperson
             else:
-                form.instance.reciever = complaint.sender
+                form.instance.receiver = complaint.sender
             form.instance.sender = request.user
             form.save()
             return redirect(f'/feedbacks/{pk}/')

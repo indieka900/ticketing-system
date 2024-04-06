@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse 
-from services.views import viewComp, viewFeebacks,home
+from services.views import viewComp, viewFeedbacks,home
 from accounts.models import MyUser
 from services.models import Complaint, Feedback, Department
 
@@ -71,14 +71,14 @@ class ViewFeedbacksViewTestCase(TestCase):
     def test_view_feedbacks_view_authenticated(self):
         request = self.factory.get(reverse('services:feedbacks', kwargs={'pk': self.complaint_chair.pk}))
         request.user = self.user_chair
-        response = viewFeebacks(request, pk=self.complaint_chair.pk)
+        response = viewFeedbacks(request, pk=self.complaint_chair.pk)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Test feedback')
 
     def test_view_feedbacks_view_unauthenticated(self):
         request = self.factory.get(reverse('services:feedbacks', kwargs={'pk': self.complaint_chair.pk}))
         request.user = AnonymousUser()
-        response = viewFeebacks(request, pk=self.complaint_chair.pk)
+        response = viewFeedbacks(request, pk=self.complaint_chair.pk)
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse('accounts:login'), response.url)
 
