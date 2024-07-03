@@ -75,7 +75,7 @@
 
         <div class="message-container" id="messageContainer">
             {% for message in feedbacks %}
-            <div class="message {% if user == message.reciever %} reciever {% else %} sender {% endif %}  ">
+            <div class="message {% if user == message.receiver %} reciever {% else %} sender {% endif %}  ">
                 <p> <span class="sender-name">{% if user == message.sender %} You
                         {% else %} {{ message.sender.username|capfirst }}
                         {% endif %} </span>: {{message.date_posted|timesince}} ago.
@@ -83,11 +83,6 @@
                     <span class="read-icon">
                         <i class="fa-sharp fa-thin fa-check" style="color: #055bf0;"></i><i
                             class="fa-sharp fa-light fa-check"></i>
-                        <!-- <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0,0,256,256">
-                                <g fill="#0857ec" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(10.66667,10.66667)"><path d="M19.98047,5.99023c-0.2598,0.00774 -0.50638,0.11632 -0.6875,0.30273l-10.29297,10.29297l-3.29297,-3.29297c-0.25082,-0.26124 -0.62327,-0.36647 -0.97371,-0.27511c-0.35044,0.09136 -0.62411,0.36503 -0.71547,0.71547c-0.09136,0.35044 0.01388,0.72289 0.27511,0.97371l4,4c0.39053,0.39037 1.02353,0.39037 1.41406,0l11,-11c0.29576,-0.28749 0.38469,-0.72707 0.22393,-1.10691c-0.16075,-0.37985 -0.53821,-0.62204 -0.9505,-0.60988z"></path></g></g>
-                                </svg> -->
-                        <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="tick"><path d="M223.9 329.7c-2.4 2.4-5.8 4.4-8.8 4.4s-6.4-2.1-8.9-4.5l-56-56 17.8-17.8 47.2 47.2L340 177.3l17.5 18.1-133.6 134.3z" fill="#011230" class="color000000 svgShape"></path></svg> -->
-
                     </span> <!-- Tick icon for read messages -->
                     {% else %}
                     <span class="read-icon">
@@ -118,28 +113,28 @@
                 {% else %}
                 <p>Unsupported file type: {{ file_type }}</p>
                 {% endif %}
-
                 {% endwith %}
                 {% endif %}
             </div>
             {% endfor %}
         </div>
+
         <div class="activity">
             <div class="activity-data">
                 <div class="complaint" id="ticket">
-                    <form class="complaintS" method="post" action="" enctype="multipart/form-data" name="complaintS">
+                    <form id="feedbackForm" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <!--<form class="complaintS" name="complaintS" onsubmit="return submitResult();"> -->
                         <center>
-                            <h3>FeedBack Form <i class="fa-sharp fa-light fa-check"></i></h3>
+                            <h3>Feedback Form <i class="fa-sharp fa-light fa-check"></i></h3>
                         </center>
 
-                        <textarea name="message" id="descr" cols="30" rows="3" placeholder="Write FeedBack"></textarea>
+                        <textarea name="message" id="feedbackMessage" cols="30" rows="3" placeholder="Write Feedback"></textarea>
 
-                        <label for="myfile">Select a file:</label>
-                        <input type="file" id="myfile" name="file" />
+                        <label for="file">Select a file:</label>
+                        <input type="file" id="file" name="file" />
+
                         <center>
-                            <button type="submit" name="create-comp">Send Feedback</button>
+                            <button type="submit" id="submitFeedback" name="create-comp">Send Feedback</button>
                         </center>
                     </form>
                 </div>
@@ -154,47 +149,15 @@
     messageContainer.scrollTop = messageContainer.scrollHeight;
     const socket = new WebSocket(`ws://${window.location.host}/ws/feedbacks/${complaint_id}/`);
 
-    socket.onopen = function (e) {
-        console.log("WebSocket connection established.");
-    };
-
-    socket.onmessage = function (event) {
-        const data = JSON.parse(event.data);
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message');
-        if (data.sender === username) {
-            messageElement.classList.add('sender');
-        } else {
-            messageElement.classList.add('receiver');
-        }
-
-        const senderName = document.createElement('span');
-        senderName.classList.add('sender-name');
-        senderName.textContent = data.sender;
-
-        const messageText = document.createElement('p');
-        messageText.textContent = data.message;
-
-        if (data.file) {
-            const fileElement = document.createElement('div');
-            fileElement.classList.add('file-container');
-            const fileLink = document.createElement('a');
-            fileLink.classList.add('file-link');
-            fileLink.href = data.file;
-            fileLink.target = '_blank';
-            fileLink.textContent = 'View File';
-            fileElement.appendChild(fileLink);
-            messageElement.appendChild(fileElement);
-        }
-
-        messageElement.appendChild(senderName);
-        messageElement.appendChild(messageText);
-        document.getElementById('messageContainer').appendChild(messageElement);
-        messageContainer.scrollTop = messageContainer.scrollHeight;
-    };
-
-    socket.onclose = function (event) {
-        console.log("WebSocket connection closed.");
-    };
+    document.getElementById("feedbackForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var form = event.target;
+        var formData = new FormData(form);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", form.action);
+        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        xhr.send(formData);
+        form.reset();
+    });
 </script>
 {% endblock body %}

@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'services.apps.ServicesConfig',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -65,17 +66,22 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'service_desk.wsgi.application'
+ASGI_APPLICATION = 'service_desk.routing.application'
 
-ASGI_APPLICATION = 'your_project.asgi.application'
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 8000)],
-        },
-    },
-}
+# ASGI_APPLICATION = 'service_desk.asgi.application'
+
+# # settings.py
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("localhost", 6379)],
+#         },
+#     },
+# }
+
 
 
 # Database

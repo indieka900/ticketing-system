@@ -113,6 +113,8 @@ def viewComp(request, pk):
 def viewFeedbacks(request, pk):
     complaint = get_object_or_404(Complaint, pk=pk)
     feedbacks = Feedback.objects.filter(complaint=complaint)
+
+    # Mark feedback as read for the current user
     for feedback in feedbacks:
         if feedback.receiver == request.user:
             feedback.read = True
@@ -132,7 +134,7 @@ def viewFeedbacks(request, pk):
             form.save()
 
             # Broadcast the new feedback to all connected clients
-            channel_layer = get_channel_layer()
+            '''channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 f'feedbacks_{pk}',
                 {
@@ -142,7 +144,7 @@ def viewFeedbacks(request, pk):
                     'receiver': form.instance.receiver.username,
                     'file': str(form.instance.file) if form.instance.file else None,
                 }
-            )
+            )''' 
 
             return redirect(f'/feedbacks/{pk}/')
 
