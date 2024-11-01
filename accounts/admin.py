@@ -20,7 +20,7 @@ def set_chairpersons(modeladmin, request, queryset):
 class UserAdminConfig(UserAdmin):
     ordering = ('-date_joined',)
     search_fields = ('email', 'full_name', 'username')
-    list_filter = ('email', 'is_active', 'is_staff', 'role')
+    list_filter = ('is_active', 'role','groups')
     list_display = ('id', 'email', 'full_name', 'phone', 'reg_no', 'username', 'role', 'is_active', 'get_groups')
     list_display_links = ('email', 'username')
 
