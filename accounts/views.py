@@ -141,11 +141,14 @@ def changePassword(request):
 
 #login user 
 def login_user(request):
+    users = MyUser.objects.all()
+    # print(users)
     if request.user.is_authenticated:
         if request.user.role == "Student":
             return redirect('services:homepage', type='student')
-        else:
+        elif request.user.role == "Chairperson":
             return redirect('services:homepage', type='chair')
+    
     user = ''
     if request.method == 'POST':
         if 'students' in request.POST:

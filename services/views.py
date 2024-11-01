@@ -1,158 +1,222 @@
 import os
-from django.http import HttpResponse
-from django import template
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render, redirect
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-from .forms import CreateComplaintForm, CreateFeedbackForm
+from typing import Dict, Any, Optional
+
 from django.contrib.auth.decorators import login_required
-from services.models import (Complaint,Feedback,Department)
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse
+from django.core.exceptions import PermissionDenied
+
+from services.models import Complaint, Feedback, Department
 from accounts.models import MyUser
+from .forms import CreateComplaintForm, CreateFeedbackForm
+from .utils import get_file_type  # Move file type logic to a utils module
 
-register = template.Library()
+class ComplaintService:
+    """Service layer for handling complaint-related business logic."""
+    
+    @staticmethod
+    def get_user_complaints(user: MyUser, complaint_type: str) -> Dict[str, Any]:
+        """
+        Retrieve complaints based on user role and type.
+        
+        Args:
+            user (MyUser): Current user
+            complaint_type (str): Type of complaints to retrieve
+        
+        Returns:
+            Dict containing complaints queryset and related information
+        """
+        if user.role not in ["Student", "Chairperson"]:
+            raise PermissionDenied("Unauthorized access")
 
-def common(user : MyUser):
-    typ = 'chair'
-    if user.role == 'Student':
-        typ = 'student'
-    return {
-        'feedback_l': Feedback.objects.filter(receiver = user, read = False),
-        'typ' : typ,
-    }
+        if complaint_type == 'student':
+            complaints = Complaint.objects.filter(sender=user)
+        elif complaint_type == 'chair':
+            department = Department.objects.get(chairperson=user)
+            complaints = Complaint.objects.filter(department=department)
+        else:
+            complaints = Complaint.objects.none()
+
+        return {
+            'all_complaints': complaints,
+            'solved_tickets': complaints.filter(status='Solved'),
+            'pending_tickets': complaints.filter(status='Pending')
+        }
 
 @login_required
-def home(request,type):
-    complaints = ''
-    if type=='student':
-        complaints = Complaint.objects.filter(sender = request.user)
-    elif type == 'chair':
-        dep = Department.objects.get(chairperson=request.user)
-        complaints = Complaint.objects.filter(department = dep)
+def home(request, type: str):
+    """
+    Centralized home view for managing complaints.
+    
+    Handles:
+    - Complaint retrieval
+    - Complaint status updates
+    - Complaint transfers
+    - Complaint creation
+    """
+    try:
+        complaint_data = ComplaintService.get_user_complaints(request.user, type)
+    except PermissionDenied:
+        return redirect('home')  # Redirect to a default home page
+
     departments = Department.objects.all()
     
-    solved_tickets = complaints.filter(status='Solved')
-    pending_tickets = complaints.filter(status='Pending')
-    
-    f = CreateComplaintForm()
-    
     if request.method == 'POST':
-        if 'solved' in request.POST:
-            id = request.POST.get('id')
-            complaint = Complaint.objects.get(pk=id)
-            complaint.status = 'Solved'
-            complaint.save()
-            return redirect(f'/home/{type}/')
-            #success message
-            
-        if 'transfer' in request.POST:
-            id = request.POST.get('id')
-            department = request.POST.get('department')
-            complaint = Complaint.objects.get(pk=id)
-            depart = Department.objects.get(pk=department)
-            print(department)
-            complaint.department = depart
-            complaint.save()
-            return redirect(f'/home/{type}/')
-        
-        if 'create-comp' in request.POST:
-            department = request.POST.get('department')
-            problem = request.POST.get('problemDetail')
-            file = request.FILES.get('myfile')
-            depart = Department.objects.get(pk=department)
-            if file:
-                complaint = Complaint(sender = request.user, message=problem, file=file, department=depart)
-            else:
-                complaint = Complaint(sender = request.user, message=problem, department=depart)
-            complaint.save()
-            return redirect(f'/home/{type}/')
-            #success message
-    
+        return _handle_complaint_actions(request, type, complaint_data['all_complaints'])
+
     context = {
-        'complaints':complaints,
-        'solved':solved_tickets,
-        'pending':pending_tickets,
-        'departments' : departments,
-        'type':type,
-        **common(request.user),
+        **complaint_data,
+        'departments': departments,
+        'type': type,
+        **_get_common_context(request.user),
     }
     
     return render(request, 'app/index.html', context)
 
-@register.filter(name='get_file_type')
-def get_file_type(filename):
-    ext = os.path.splitext(filename)[-1].lower()
-    if ext in {".jpg", ".jpeg", ".png"}:
-        return "Image"
-    elif ext in {".docx", ".doc"}:
-        return "Word Document"
-    elif ext == ".pdf":
-        return "PDF"
-    else:
-        return "Unknown"
-register.filter(name='get_file_type')
+def _handle_complaint_actions(request, type: str, complaints):
+    """
+    Handle different complaint-related POST actions.
+    
+    Args:
+        request: HTTP request object
+        type: User type (student/chair)
+        complaints: Queryset of complaints
+    
+    Returns:
+        HttpResponseRedirect to home page
+    """
+    action_handlers = {
+        'solved': _mark_complaint_solved,
+        'transfer': _transfer_complaint,
+        'create-comp': _create_complaint,
+    }
+
+    for action, handler in action_handlers.items():
+        if action in request.POST:
+            handler(request, type)
+            break
+
+    return redirect(reverse('home', kwargs={'type': type}))
+
+def _mark_complaint_solved(request, type: str):
+    """Mark a specific complaint as solved."""
+    complaint_id = request.POST.get('id')
+    complaint = Complaint.objects.get(pk=complaint_id)
+    complaint.status = 'Solved'
+    complaint.save()
+
+def _transfer_complaint(request, type: str):
+    """Transfer a complaint to a different department."""
+    complaint_id = request.POST.get('id')
+    department_id = request.POST.get('department')
+    
+    complaint = Complaint.objects.get(pk=complaint_id)
+    complaint.department = Department.objects.get(pk=department_id)
+    complaint.save()
+
+def _create_complaint(request, type: str):
+    """Create a new complaint."""
+    department_id = request.POST.get('department')
+    problem_detail = request.POST.get('problemDetail')
+    uploaded_file = request.FILES.get('myfile')
+    
+    department = Department.objects.get(pk=department_id)
+    
+    complaint_data = {
+        'sender': request.user,
+        'message': problem_detail,
+        'department': department
+    }
+    
+    if uploaded_file:
+        complaint_data['file'] = uploaded_file
+    
+    Complaint.objects.create(**complaint_data)
 
 @login_required
-def viewComp(request, pk):
-    complaint = Complaint.objects.get(pk=pk)
+def view_complaint(request, pk: int):
+    """
+    View details of a specific complaint.
     
-    filename = ""
-    if complaint.file:
-        filename = filename = os.path.basename(complaint.file.name) 
-    file_type = get_file_type(filename)
+    Args:
+        request: HTTP request object
+        pk: Primary key of the complaint
+    """
+    complaint = get_object_or_404(Complaint, pk=pk)
+    filename = os.path.basename(complaint.file.name) if complaint.file else ""
+    
     context = {
         'complaint': complaint,
-        'file_type' : file_type,
-        **common(request.user),
+        'file_type': get_file_type(filename),
+        **_get_common_context(request.user),
     }
     return render(request, 'app/complaint.html', context)
 
-
-
 @login_required
-def viewFeedbacks(request, pk):
+def view_feedbacks(request, pk: int):
+    """
+    View and manage feedbacks for a specific complaint.
+    
+    Args:
+        request: HTTP request object
+        pk: Primary key of the complaint
+    """
     complaint = get_object_or_404(Complaint, pk=pk)
     feedbacks = Feedback.objects.filter(complaint=complaint)
-
-    # Mark feedback as read for the current user
-    for feedback in feedbacks:
-        if feedback.receiver == request.user:
-            feedback.read = True
-            feedback.save()
+    
+    # Mark user's unread feedbacks as read
+    feedbacks.filter(receiver=request.user, read=False).update(read=True)
 
     if request.method == 'POST':
-        form = CreateFeedbackForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.instance.complaint = complaint
-            if not isinstance(request.user, MyUser):
-                return HttpResponse("Unauthorized", status=401)
-            if request.user == complaint.sender:
-                form.instance.receiver = complaint.department.chairperson
-            else:
-                form.instance.receiver = complaint.sender
-            form.instance.sender = request.user
-            form.save()
-
-            # Broadcast the new feedback to all connected clients
-            '''channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f'feedbacks_{pk}',
-                {
-                    'type': 'new_feedback',
-                    'message': form.instance.message,
-                    'sender': form.instance.sender.username,
-                    'receiver': form.instance.receiver.username,
-                    'file': str(form.instance.file) if form.instance.file else None,
-                }
-            )''' 
-
-            return redirect(f'/feedbacks/{pk}/')
+        return _handle_feedback_creation(request, complaint)
 
     context = {
         'complaint': complaint,
         'feedbacks': feedbacks,
-        **common(request.user),
+        **_get_common_context(request.user),
     }
     return render(request, 'app/feedbacks.html', context)
 
-# Create your views here.
+def _handle_feedback_creation(request, complaint):
+    """
+    Handle feedback form submission.
+    
+    Args:
+        request: HTTP request object
+        complaint: Complaint instance
+    
+    Returns:
+        HttpResponseRedirect to feedbacks page
+    """
+    form = CreateFeedbackForm(request.POST, request.FILES)
+    if form.is_valid():
+        feedback = form.save(commit=False)
+        feedback.complaint = complaint
+        
+        # Determine receiver based on sender's role
+        feedback.receiver = (
+            complaint.department.chairperson 
+            if request.user == complaint.sender 
+            else complaint.sender
+        )
+        feedback.sender = request.user
+        feedback.save()
+
+        return redirect(reverse('view_feedbacks', kwargs={'pk': complaint.pk}))
+
+def _get_common_context(user: MyUser) -> Dict[str, Any]:
+    """
+    Generate common context for views.
+    
+    Args:
+        user: Current user
+    
+    Returns:
+        Dictionary with common context data
+    """
+    user_type = 'student' if user.role == 'Student' else 'chair'
+    return {
+        'feedback_l': Feedback.objects.filter(receiver=user, read=False),
+        'typ': user_type,
+    }

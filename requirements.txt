@@ -8,7 +8,7 @@ django-channels==0.7.0
 idna==3.6
 msgpack==1.0.8
 oauthlib==3.2.2
-pillow==10.2.0
+Pillow
 redis==5.0.3
 requests==2.31.0
 requests-oauthlib==2.0.0
