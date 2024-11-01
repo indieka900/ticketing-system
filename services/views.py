@@ -1,7 +1,8 @@
 import os
 from typing import Dict, Any, Optional
-
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -10,7 +11,7 @@ from django.core.exceptions import PermissionDenied
 from services.models import Complaint, Feedback, Department
 from accounts.models import MyUser
 from .forms import CreateComplaintForm, CreateFeedbackForm
-from .utils import get_file_type  # Move file type logic to a utils module
+from .utils import get_file_type
 
 class ComplaintService:
     """Service layer for handling complaint-related business logic."""
@@ -28,6 +29,7 @@ class ComplaintService:
             Dict containing complaints queryset and related information
         """
         if user.role not in ["Student", "Chairperson"]:
+            user.groups.add()
             raise PermissionDenied("Unauthorized access")
 
         if complaint_type == 'student':
@@ -45,6 +47,7 @@ class ComplaintService:
         }
 
 @login_required
+# @permission_required(['services.view_department', 'services.add_complaint'])
 def home(request, type: str):
     """
     Centralized home view for managing complaints.
@@ -55,6 +58,28 @@ def home(request, type: str):
     - Complaint transfers
     - Complaint creation
     """
+
+    group1 = Group.objects.get(id=1)
+    group2, created = Group.objects.get_or_create(name="Group 2")
+    
+    # group2.user_set.add(request.user)
+    content_type = ContentType.objects.get_for_model(Complaint)
+
+    # Retrieve all permissions for that content type
+    permissions = Permission.objects.filter(content_type=content_type)
+    
+    user_permissions = request.user.get_all_permissions()
+
+    # Display all permissions for the user
+    for perm in user_permissions:
+        app_label, permission_codename = perm.split(".")
+        print(permission_codename)
+
+    # Display the permissions
+    # for perm in permissions:
+    #     print(f"Permission Name: {perm.name}, Codename: {perm.codename}")
+    # permissions = group1.permissions.all()
+
     try:
         complaint_data = ComplaintService.get_user_complaints(request.user, type)
     except PermissionDenied:

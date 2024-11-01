@@ -18,17 +18,17 @@
                         <div class='col-md-4 box box1'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>TOTAL TICKETS</span>
-                            <span class='number'>{{complaints|length}}</span>
+                            <span class='number'>{{all_complaints|length}}</span>
                         </div>
                         <div class='col-md-3 box box2'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>SOLVED TICKETS</span>
-                            <span class='number'>{{ solved|length }}</span>
+                            <span class='number'>{{ solved_tickets|length }}</span>
                         </div>
                         <div class='col-md-4 box box3'>
                             <i class='uil uil-files-landscapes'></i>
                             <span class='text'>PENDING TICKETS</span>
-                            <span class='number'>{{ pending|length }}</span>
+                            <span class='number'>{{ pending_tickets|length }}</span>
                         </div>
                     </div>
                 </div>
@@ -53,13 +53,13 @@
                                     <th>Posted On</th>
                                     <th>Action</th>
                                 </tr>
-                                {% for complaint in complaints %}
+                                {% for complaint in all_complaints %}
 
 
                                 <tr style="background:#fdfdfd" class="clickable-row"
                                     data-description="<?php echo $data['Description'] ?? ''; ?>">
                                     <td>
-                                        <a href="/complaint/{{complaint.id}}/ ">{{complaint.id}}</a>
+                                        <a href="/complaint/{{complaint.id}}/ ">{{forloop.counter}}</a>
                                     </td>
                                     <td>
                                         {{complaint.message}}

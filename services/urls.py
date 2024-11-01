@@ -1,12 +1,12 @@
 from django.urls import path
 from services.views import (
-    home, viewComp, viewFeedbacks
+    home, view_complaint, view_feedbacks
 )
 
 app_name = 'services'
 
 urlpatterns = [
     path('home/<str:type>/', home, name='homepage'),
-    path('complaint/<str:pk>/', viewComp, name='complaint'),
-    path('feedbacks/<str:pk>/', viewFeedbacks, name='feedbacks'),
+    path('complaint/<str:pk>/', view_complaint, name='complaint'),
+    path('feedbacks/<str:pk>/', view_feedbacks, name='feedbacks'),
 ]
