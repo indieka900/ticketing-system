@@ -59,7 +59,7 @@ def home(request, type: str):
     - Complaint creation
     """
 
-    group1 = Group.objects.get(id=1)
+    '''group1 = Group.objects.get(id=1)
     group2, created = Group.objects.get_or_create(name="Group 2")
     
     # group2.user_set.add(request.user)
@@ -73,7 +73,7 @@ def home(request, type: str):
     # Display all permissions for the user
     for perm in user_permissions:
         app_label, permission_codename = perm.split(".")
-        print(permission_codename)
+        print(permission_codename)'''
 
     # Display the permissions
     # for perm in permissions:
@@ -83,7 +83,7 @@ def home(request, type: str):
     try:
         complaint_data = ComplaintService.get_user_complaints(request.user, type)
     except PermissionDenied:
-        return redirect('home')  # Redirect to a default home page
+        return redirect('accounts:login')
 
     departments = Department.objects.all()
     
@@ -122,7 +122,7 @@ def _handle_complaint_actions(request, type: str, complaints):
             handler(request, type)
             break
 
-    return redirect(reverse('home', kwargs={'type': type}))
+    return redirect(f'/home/{type}/', kwargs={'type': type})
 
 def _mark_complaint_solved(request, type: str):
     """Mark a specific complaint as solved."""
