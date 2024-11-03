@@ -1,75 +1,121 @@
-<article class="tabContent" id="tabContent5">
-    <div id="tickettransfer">
-        <!-- Add a dropdown menu to select sorting criteria -->
-<select id="sortingCriteria">
-    <option value="pending">Pending</option>
-    <option value="solved">Solved</option>
-</select>
+<article class="tabContent" id="tabContent5" class="width: 100%;">
+  <div id="tickettransfer" class="width: 100%;">
+    <select id="sortingCriteria" style="padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer; border-radius: 4px; margin-bottom: 10px;">
+      <option value="all">All Tickets</option>
+      <option value="Pending">Pending</option>
+      <option value="Solved">Solved</option>
+    </select>
 
-<table id="complaintsTable" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-    <thead>
-        <tr style="border: 1px solid #8b8c8b; border-collapse: collapse;">
-            <th>Ticket Id</th>
-            <th>Description</th>
-            <th>Department</th>
-            <th>Raised On</th>
-            <th>Available Departments</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for complaint in all_complaints %}
-        <tr class="clickable-row" data-description="{{complaint.message}}">
-            <td>{{complaint.id}}</td>
-            <td>{{complaint.message}}</td>
-            <td>{{complaint.department}}</td>
-            <td>{{complaint.date_posted|timesince}} ago</td>
-            <td>
+    <div class="ticketassign">
+        <table id="complaintsTable" class="w-full mt-5 border-collapse">
+          <thead>
+            <tr class="border border-gray-300">
+              <th class="p-2">Ticket Id</th>
+              <th class="p-2">Description</th>
+              <th class="p-2">Department</th>
+              <!-- <th class="p-2">Status</th> -->
+              <th class="p-2">Raised On</th>
+              <th class="p-2">Available Departments</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for complaint in all_complaints %}
+            <tr class="clickable-row complaint-row border border-gray-300"
+                data-description="{{complaint.message}}"
+                data-status="{{complaint.status}}">
+              <td class="p-2">{{forloop.counter}}</td>
+              <td class="p-2">{{complaint.message}}</td>
+              <td class="p-2">{{complaint.department}}</td>
+              <!-- <td class="p-2">{{complaint.status}}</td> -->
+              <td class="p-2">{{complaint.date_posted|timesince}} ago</td>
+              <td>
                 <form class="transferT" name="transferT" method="post" action="">
-                    {% csrf_token %}
-                    <input type="text" style="display: none;" class="issue" name="id" value={{complaint.id}}>
-                    <select class="expert" name="department" style="padding: 5px 10px; border: none; background-color: #333; color: #fff; cursor: pointer;" required>
-                        <option value="" disabled selected>Select Department</option>
-                        {% for department in departments %}
-                        <option value={{department.id}}>
-                            {{department.department_name}}
-                        </option>
-                        {% endfor %}
-                    </select>
-                    <button style="padding: 5px 10px; border: none; margin-left: 20px; background-color: #333; color: #fff; cursor: pointer;" type="submit" name="transfer">Transfer</button>
+                  {% csrf_token %}
+                  <input
+                    type="text"
+                    style="display: none"
+                    class="issue"
+                    name="id"
+                    value="{{complaint.id}}"
+                  />
+                  <select
+                    class="expert"
+                    name="department"
+                    style="
+                      padding: 5px 10px;
+                      border: none;
+                      background-color: #333;
+                      color: #fff;
+                      cursor: pointer;
+                    "
+                    required
+                  >
+                    <option value="" disabled selected>Select Department</option>
+                    {% for department in departments %}
+                    <option value="{{department.id}}">
+                      {{department.department_name}}
+                    </option>
+                    {% endfor %}
+                  </select>
+                  <button
+                    style="
+                      padding: 5px 10px;
+                      border: none;
+                      margin-left: 20px;
+                      background-color: #333;
+                      color: #fff;
+                      cursor: pointer;
+                    "
+                    type="submit"
+                    name="transfer"
+                  >
+                    Transfer
+                  </button>
                 </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<script>
-    // Function to sort table rows based on the selected sorting criteria
-    function sortTable() {
-        var table = document.getElementById("complaintsTable");
-        var rows = table.getElementsByTagName("tr");
-        var sortingCriteria = document.getElementById("sortingCriteria").value;
-
-        // Loop through all table rows except the header row
-        for (var i = 1; i < rows.length; i++) {
-            var currentRow = rows[i];
-            var currentStatus = currentRow.getElementsByTagName("td")[4].textContent;
-
-            // Check if the row matches the selected sorting criteria
-            if (currentStatus.toLowerCase() === sortingCriteria.toLowerCase()) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    // Event listener to trigger sorting when the sorting criteria changes
-    document.getElementById("sortingCriteria").addEventListener("change", sortTable);
-
-    // Initial sorting when the page loads
-    sortTable();
-</script>
-
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
     </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const sortingSelect = document.getElementById('sortingCriteria');
+        const complaintsTable = document.getElementById('complaintsTable');
+        
+        function filterComplaints() {
+          const selectedStatus = sortingSelect.value;
+          const rows = complaintsTable.querySelectorAll('.complaint-row');
+          
+          rows.forEach(row => {
+            const status = row.getAttribute('data-status');
+            
+            if (selectedStatus === 'all' || status === selectedStatus) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        }
+        
+        // Add event listener for sorting change
+        sortingSelect.addEventListener('change', filterComplaints);
+        
+        // Initial filter
+        filterComplaints();
+        
+        // Optional: Add highlight on hover
+        const rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(row => {
+          row.addEventListener('mouseover', () => {
+            row.classList.add('bg-gray-100');
+          });
+          row.addEventListener('mouseout', () => {
+            row.classList.remove('bg-gray-100');
+          });
+        });
+      });
+    </script>
+  </div>
 </article>

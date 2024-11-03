@@ -488,9 +488,9 @@ input[name="tabs"] {
 }
 
 .tabWrap {
-  width: 90%;
+  width: 95%;
   margin: 2%;
-  max-width: 90%;
+  max-width: 95%;
 }
 .tabWrap label {
   cursor: pointer;
