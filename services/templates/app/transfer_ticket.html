@@ -17,7 +17,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for complaint in complaints %}
+        {% for complaint in all_complaints %}
         <tr class="clickable-row" data-description="{{complaint.message}}">
             <td>{{complaint.id}}</td>
             <td>{{complaint.message}}</td>

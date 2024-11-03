@@ -3,63 +3,171 @@
 
 {% block body %}
 
-    <ul class="tabs-content">
+<ul class="tabs-content">
 
-        <li id="D0">
+    <li id="D0">
 
-            <div class='dash-content'>
-                <div class='overview'>
-                    <div class='title'>
-                        <i class='uil uil-tachometer-fast-alt'></i>
-                        <span class='text'> {% if type == "chair" %}Department{% else %}Student{% endif %}  Dashboard</span>
+        <div class='dash-content'>
+            <div class='overview'>
+                <div class='title'>
+                    <i class='uil uil-tachometer-fast-alt'></i>
+                    <span class='text'> {% if type == "chair" %}Department{% else %}Student{% endif %} Dashboard</span>
+                </div>
+
+                <div class='boxes'>
+                    <div class='col-md-4 box box1'>
+                        <i class='uil uil-files-landscapes'></i>
+                        <span class='text'>TOTAL TICKETS</span>
+                        <span class='number'>{{all_complaints|length}}</span>
                     </div>
-
-                    <div class='boxes'>
-                        <div class='col-md-4 box box1'>
-                            <i class='uil uil-files-landscapes'></i>
-                            <span class='text'>TOTAL TICKETS</span>
-                            <span class='number'>{{all_complaints|length}}</span>
-                        </div>
-                        <div class='col-md-3 box box2'>
-                            <i class='uil uil-files-landscapes'></i>
-                            <span class='text'>SOLVED TICKETS</span>
-                            <span class='number'>{{ solved_tickets|length }}</span>
-                        </div>
-                        <div class='col-md-4 box box3'>
-                            <i class='uil uil-files-landscapes'></i>
-                            <span class='text'>PENDING TICKETS</span>
-                            <span class='number'>{{ pending_tickets|length }}</span>
-                        </div>
+                    <div class='col-md-3 box box2'>
+                        <i class='uil uil-files-landscapes'></i>
+                        <span class='text'>SOLVED TICKETS</span>
+                        <span class='number'>{{ solved_tickets|length }}</span>
+                    </div>
+                    <div class='col-md-4 box box3'>
+                        <i class='uil uil-files-landscapes'></i>
+                        <span class='text'>PENDING TICKETS</span>
+                        <span class='number'>{{ pending_tickets|length }}</span>
                     </div>
                 </div>
-                <!-- ";
+            </div>
+            <!-- ";
                 }
                 ?> -->
-                <div class="activity">
-                    <div class="title">
-                        <i class="uil uil-clock-three"></i>
-                        <span class="text">Recent Activity</span>
-                    </div>
+            <div class="activity">
+                <div class="title">
+                    <i class="uil uil-clock-three"></i>
+                    <span class="text">Recent Activity</span>
+                </div>
 
-                    <div class="activity-data">
-                        <div id="adminDash" style="width: 100%;">
+                <div class="activity-data">
+                    <div id="adminDash" style="width: 100%;">
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <tr style=" border:1px solid #8b8c8b; border-collapse:collapse;">
+                                <th>TICKET ID</th>
+                                <th>Description</th>
+                                <!-- <th>Complainant</th> -->
+                                <th>Department</th>
+                                <th>Status</th>
+                                <th>Posted On</th>
+                                <th>Action</th>
+                            </tr>
+                            {% for complaint in all_complaints %}
+
+
+                            <tr style="background:#fdfdfd" class="clickable-row"
+                                data-description="<?php echo $data['Description'] ?? ''; ?>">
+                                <td>
+                                    <a href="/complaint/{{complaint.id}}/ ">{{forloop.counter}}</a>
+                                </td>
+                                <td>
+                                    {{complaint.message}}
+                                </td>
+                                <td>
+                                    {{complaint.department}}
+                                </td>
+                                <td class="<?php echo ($complaint['Status'] === 0) ? 0 : 1; ?>">
+
+                                    {{complaint.status}}
+                                </td>
+                                <td>
+                                    {{complaint.date_posted|timesince}} ago
+                                </td>
+                                <td>
+
+                                    {% if complaint.status == "Pending" %}
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="id" value="{{complaint.id}}">
+                                        <button
+                                            style=" padding: 5px 10px; border: none;  background-color: #333; color: #fff; cursor: pointer;"
+                                            type="submit" name="solved">Mark Solved
+                                        </button>
+                                    </form>
+
+                                    {% else %}
+
+                                    {% endif %}
+                                    <a href="/feedbacks/{{complaint.id}}/ ">View FeedBacks</a>
+
+
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+    </li>
+    <li id="D2">
+
+
+        <div class="dash-content">
+
+            <div class='overview'>
+                <div class='title'>
+                    <i class='uil uil-tachometer-fast-alt'></i>
+                    <span class='text'>Tickets</span>
+                </div>
+
+                <div class='boxes'>
+                    <div class='col-md-4 box box1'>
+                        <i class='uil uil-files-landscapes'></i>
+                        <span class='text'>TOTAL TICKETS</span>
+                        <span class='number'>{{all_complaints|length}}</span>
+                    </div>
+                    <div class='col-md-3 box box2'>
+                        <i class='uil uil-files-landscapes'></i>
+                        <span class='text'>SOLVED TICKETS</span>
+                        <span class='number'>{{ solved_tickets|length }}</span>
+                    </div>
+                    <div class='col-md-4 box box3'>
+                        <i class='uil uil-files-landscapes'></i>
+                        <span class='text'>PENDING TICKETS</span>
+                        <span class='number'>{{ pending_tickets|length }}</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="cssAnimsDemo">
+                <div class="tabWrap">
+
+
+                    <!-- Links for Desktop -->
+                    <!-- <input id="tabLink4" type="radio" name="tabs" checked>
+                        <label for="tabLink4" class="desktopTabLink" style="width: 32%;">Assign Ticket</label> -->
+
+                    <input id="tabLink5" type="radio" name="tabs">
+                    <label for="tabLink5" class="desktopTabLink" style="width: 32%;">Transfer Ticket</label>
+
+                    <input id="tabLink6" type="radio" name="tabs">
+                    <label for="tabLink6" class="desktopTabLink" style="width: 32%;">Raise Ticket</label>
+
+
+                    <!-- Links for Mobile -->
+                    <input id="tabLinkMobile4" type="radio" name="tabs" checked>
+                    <label for="tabLinkMobile4" class="mobileAccordionLink">Assign Ticket</label>
+
+                    <!-- Content -->
+                    <article class="tabContent" id="tabContent4">
+
+                        <!-- <div id='adminDashTable'> -->
+                        <div id="ticketassign">
                             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                                 <tr style=" border:1px solid #8b8c8b; border-collapse:collapse;">
-                                    <th>TICKET ID</th>
+                                    <th>Ticket Id</th>
                                     <th>Description</th>
-                                    <!-- <th>Complainant</th> -->
                                     <th>Department</th>
-                                    <th>Status</th>
-                                    <th>Posted On</th>
-                                    <th>Action</th>
+                                    <th>Raised On</th>
+                                    <!-- <th>Available Departments</th> -->
                                 </tr>
                                 {% for complaint in all_complaints %}
-
-
-                                <tr style="background:#fdfdfd" class="clickable-row"
-                                    data-description="<?php echo $data['Description'] ?? ''; ?>">
+                                <tr>
+                                <tr class="clickable-row" data-description={{complaint.message}}>
                                     <td>
-                                        <a href="/complaint/{{complaint.id}}/ ">{{forloop.counter}}</a>
+                                        {{complaint.id}}
                                     </td>
                                     <td>
                                         {{complaint.message}}
@@ -67,119 +175,11 @@
                                     <td>
                                         {{complaint.department}}
                                     </td>
-                                    <td class="<?php echo ($complaint['Status'] === 0) ? 0 : 1; ?>">
 
-                                        {{complaint.status}}
-                                    </td>
                                     <td>
                                         {{complaint.date_posted|timesince}} ago
                                     </td>
-                                    <td>
-
-                                        {% if complaint.status == "Pending" %}
-                                        <form action="" method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="id" value="{{complaint.id}}">
-                                            <button
-                                                style=" padding: 5px 10px; border: none;  background-color: #333; color: #fff; cursor: pointer;"
-                                                type="submit" name="solved">Mark Solved
-                                            </button>
-                                        </form>
-
-                                        {% else %}
-
-                                        {% endif %}
-                                        <a href="/feedbacks/{{complaint.id}}/ ">View FeedBacks</a>
-
-
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </div>
-                </div>
-        </li>
-        <li id="D2">
-
-
-            <div class="dash-content">
-
-                <div class='overview'>
-                    <div class='title'>
-                        <i class='uil uil-tachometer-fast-alt'></i>
-                        <span class='text'>Tickets</span>
-                    </div>
-
-                    <div class='boxes'>
-                        <div class='col-md-4 box box1'>
-                            <i class='uil uil-files-landscapes'></i>
-                            <span class='text'>TOTAL TICKETS</span>
-                            <span class='number'>{{complaints|length}}</span>
-                        </div>
-                        <div class='col-md-3 box box2'>
-                            <i class='uil uil-files-landscapes'></i>
-                            <span class='text'>SOLVED TICKETS</span>
-                            <span class='number'>{{ solved|length }}</span>
-                        </div>
-                        <div class='col-md-4 box box3'>
-                            <i class='uil uil-files-landscapes'></i>
-                            <span class='text'>PENDING TICKETS</span>
-                            <span class='number'>{{ pending|length }}</span>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="cssAnimsDemo">
-                    <div class="tabWrap">
-
-
-                        <!-- Links for Desktop -->
-                        <!-- <input id="tabLink4" type="radio" name="tabs" checked>
-                        <label for="tabLink4" class="desktopTabLink" style="width: 32%;">Assign Ticket</label> -->
-
-                        <input id="tabLink5" type="radio" name="tabs">
-                        <label for="tabLink5" class="desktopTabLink" style="width: 32%;">Transfer Ticket</label>
-
-                        <input id="tabLink6" type="radio" name="tabs">
-                        <label for="tabLink6" class="desktopTabLink" style="width: 32%;">Raise Ticket</label>
-
-
-                        <!-- Links for Mobile -->
-                        <input id="tabLinkMobile4" type="radio" name="tabs" checked>
-                        <label for="tabLinkMobile4" class="mobileAccordionLink">Assign Ticket</label>
-
-                        <!-- Content -->
-                        <article class="tabContent" id="tabContent4">
-
-                            <!-- <div id='adminDashTable'> -->
-                            <div id="ticketassign">
-                                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                                    <tr style=" border:1px solid #8b8c8b; border-collapse:collapse;">
-                                        <th>Ticket Id</th>
-                                        <th>Description</th>
-                                        <th>Department</th>
-                                        <th>Raised On</th>
-                                        <!-- <th>Available Departments</th> -->
-                                    </tr>
-                                    {% for complaint in complaints %}
-                                    <tr>
-                                    <tr class="clickable-row" data-description={{complaint.message}}>
-                                        <td>
-                                            {{complaint.id}}
-                                        </td>
-                                        <td>
-                                            {{complaint.message}}
-                                        </td>
-                                        <td>
-                                            {{complaint.department}}
-                                        </td>
-
-                                        <td>
-                                            {{complaint.date_posted|timesince}} ago
-                                        </td>
-                                        <!-- <td>
+                                    <!-- <td>
 
                                             <form class="transferT" name="transferT" method="post" action="">
                                                 {% csrf_token %}
@@ -202,42 +202,42 @@
                                             </form>
 
                                         </td> -->
-                                    </tr>
-                                    {% endfor %}
-                                </table>
-                            </div>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
 
-                        </article>
-                        <!-- Links for Mobile -->
-                        <input id="tabLink5" type="radio" name="tabs">
-                        <label for="tabLink5" class="mobileAccordionLink">Transfer Ticket</label>
+                    </article>
+                    <!-- Links for Mobile -->
+                    <input id="tabLink5" type="radio" name="tabs">
+                    <label for="tabLink5" class="mobileAccordionLink">Transfer Ticket</label>
 
-                        <!-- Content -->
-                        {% include "app/transfer_ticket.html" %}
+                    <!-- Content -->
+                    {% include "app/transfer_ticket.html" %}
 
 
-                        <!-- Links for Mobile -->
-                        <input id="tabLinkMobile6" type="radio" name="tabs">
-                        <label for="tabLinkMobile6" class="mobileAccordionLink">Raise Ticket</label>
-                        {% include "app/raiseticket.html" %}
-                    </div>
+                    <!-- Links for Mobile -->
+                    <input id="tabLinkMobile6" type="radio" name="tabs">
+                    <label for="tabLinkMobile6" class="mobileAccordionLink">Raise Ticket</label>
+                    {% include "app/raiseticket.html" %}
                 </div>
             </div>
-        </li>
-        <li id="D3">
-            <div class="dash-content">
-                <div class="overview">
-                    <div class="title">
-                        <i class="uil uil-tachometer-fast-alt"></i>
-                        <span class="text">Reports</span>
-                    </div>
-
-
+        </div>
+    </li>
+    <li id="D3">
+        <div class="dash-content">
+            <div class="overview">
+                <div class="title">
+                    <i class="uil uil-tachometer-fast-alt"></i>
+                    <span class="text">Reports</span>
                 </div>
-            </div>
-        </li>
 
-    </ul>
+
+            </div>
+        </div>
+    </li>
+
+</ul>
 
 
 {% endblock body %}
