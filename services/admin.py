@@ -1,5 +1,5 @@
 from django.contrib import admin
-from services.models import (Department, Complaint, Feedback)
+from services.models import (Department, Complaint, Feedback, DepartmentChairperson)
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.html import format_html
@@ -34,12 +34,15 @@ class ComplaintAdmin(admin.ModelAdmin):
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
     ordering = ('department_name',)
-    # search_fields = ('apartment__apartment_name__icontains','room_type__icontains','rent__icontains','room_number__icontains')
-    list_display = ('department_number','department_name','chairperson',)
-    # actions = [book_rooms, unbook_rooms]
-    # fieldsets = [
-    #     ("New-room", {
-    #         "classes": ("collapse", "expanded"),
-    #         "fields": ('room_number','rent','rate','booked','room_type','size','apartment'),
-    #     }),
-    # ]
+    list_display = ('department_number', 'department_name', 'display_chairs')
+    
+    def display_chairs(self, obj):
+        chairs = obj.chairs.all()
+        return ", ".join([str(chair.user) for chair in chairs])
+    display_chairs.short_description = 'Chairpersons'
+
+@admin.register(DepartmentChairperson)
+class DepartmentChairpersonAdmin(admin.ModelAdmin):
+    list_display = ('user', 'department', 'date_assigned')
+    list_filter = ('department',)
+    search_fields = ('user__username', 'department__department_name')

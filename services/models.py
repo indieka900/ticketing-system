@@ -2,13 +2,23 @@ from django.db import models
 from accounts.models import MyUser
 
 class Department(models.Model):
-    department_name = models.CharField( max_length=100)
+    department_name = models.CharField(max_length=100)
     department_number = models.CharField(max_length=20)
-    chairperson = models.ForeignKey(MyUser, on_delete=models.SET_NULL, blank=True, null=True)
     description = models.TextField()
     
     def __str__(self):
         return self.department_name
+
+class DepartmentChairperson(models.Model):
+    user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name='chair_department')
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='chairs')
+    date_assigned = models.DateField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ['user', 'department']  # Ensures one user can't be in multiple departments
+        
+    def __str__(self):
+        return f"{self.user} - Chair of {self.department}"
     
 class Complaint(models.Model):
     

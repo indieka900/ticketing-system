@@ -49,7 +49,7 @@ def login_user(request):
         try:
             user = MyUser.objects.get(email=email)
         except MyUser.DoesNotExist:
-            messages.error(request, 'Email/registration number does not exist!')
+            messages.error(request, 'Email does not exist!')
             return redirect('accounts:login')
 
         if user is not None:

@@ -24,7 +24,7 @@
         }
 
         .notification:hover {
-            background: red;
+            background: rgba(255, 0, 0, 0.76);
         }
 
         .notification .badge {
@@ -57,12 +57,16 @@
             <title>SERVICE DESK-IT Ticketing-</title>
             <div class="menu-items">
                 <ul class="tabs">
-                    <!-- <li>
-                        <a href="/home/{{typ}}/#D0">
-                            <i class="uil uil-user-circle"></i>
-                            <span class="link-name">{{user.username}}</span>
-                        </a>
-                    </li> -->
+                    <li>
+                        
+                        {% if department %}
+                            <a>
+                                <!-- <i class="uil uil-user-circle"></i> -->
+                                <span class="link-name" style="font-size: small; color: #000">{{ department.department_name }} Department</span>
+                            </a>
+                        {% endif %}
+                            
+                    </li>
                     <li><a href="/home/{{typ}}/#D0" class="active">
                             <i class="uil uil-estate"></i>
                             <span class="link-name">Dashboard</span>
@@ -89,7 +93,7 @@
                     </li>
                     
 
-                    <li class="mode">
+                    <!-- <li class="mode">
                         <a href="javascript:void(0);">
                             <i class="uil uil-moon"></i>
                             <span class="link-name">Dark Mode</span>
@@ -98,7 +102,7 @@
                         <div class="mode-toggle">
                             <span class="switch"></span>
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </nav>

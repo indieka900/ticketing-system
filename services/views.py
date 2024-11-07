@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 
-from services.models import Complaint, Feedback, Department
+from services.models import Complaint, Feedback, Department, DepartmentChairperson
 from accounts.models import MyUser
 from .forms import CreateComplaintForm, CreateFeedbackForm
 from .utils import get_file_type
@@ -31,19 +31,24 @@ class ComplaintService:
         if user.role not in ["Student", "Chairperson"]:
             user.groups.add()
             raise PermissionDenied("Unauthorized access")
-
+        department = None
         if complaint_type == 'student':
             complaints = Complaint.objects.filter(sender=user)
         elif complaint_type == 'chair':
-            department = Department.objects.get(chairperson=user)
-            complaints = Complaint.objects.filter(department=department)
+            try:
+                chair_position = DepartmentChairperson.objects.get(user=user)
+                department = chair_position.department
+                complaints = Complaint.objects.filter(department=department)
+            except DepartmentChairperson.DoesNotExist:
+                complaints = Complaint.objects.none()
         else:
             complaints = Complaint.objects.none()
 
         return {
             'all_complaints': complaints,
             'solved_tickets': complaints.filter(status='Solved'),
-            'pending_tickets': complaints.filter(status='Pending')
+            'pending_tickets': complaints.filter(status='Pending'),
+            'department' : department
         }
 
 @login_required
@@ -225,4 +230,5 @@ def _get_common_context(user: MyUser) -> Dict[str, Any]:
     return {
         'feedback_l': Feedback.objects.filter(receiver=user, read=False),
         'typ': user_type,
+        'user' : user
     }
