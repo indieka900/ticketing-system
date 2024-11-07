@@ -204,16 +204,6 @@ def view_feedbacks(request, pk: int):
     return render(request, 'app/feedbacks.html', context)
 
 def _handle_feedback_creation(request, complaint):
-    """
-    Handle feedback form submission.
-    
-    Args:
-        request: HTTP request object
-        complaint: Complaint instance
-    
-    Returns:
-        HttpResponseRedirect to feedbacks page
-    """
     form = CreateFeedbackForm(request.POST, request.FILES)
     if form.is_valid():
         feedback = form.save(commit=False)
@@ -228,18 +218,9 @@ def _handle_feedback_creation(request, complaint):
         feedback.sender = request.user
         feedback.save()
 
-        return redirect(reverse('view_feedbacks', kwargs={'pk': complaint.pk}))
+        return redirect(f"/feedbacks/{complaint.pk}/")
 
 def _get_common_context(user: MyUser) -> Dict[str, Any]:
-    """
-    Generate common context for views.
-    
-    Args:
-        user: Current user
-    
-    Returns:
-        Dictionary with common context data
-    """
     user_type = 'student' if user.role == 'Student' else 'chair'
     return {
         'feedback_l': Feedback.objects.filter(receiver=user, read=False),

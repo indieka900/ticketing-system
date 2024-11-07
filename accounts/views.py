@@ -35,6 +35,40 @@ class SignupView(CreateView):
             return redirect(reverse('accounts:login'))
             
         return render(self.request, "accounts/sign_alert.html")
+    
+#login user 
+def login_user(request):
+    if request.user.is_authenticated:
+        if request.user.role == "Student":
+            return redirect('services:homepage', type='student')
+        elif request.user.role == "Chairperson":
+            return redirect('services:homepage', type='chair')
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            user = MyUser.objects.get(email=email)
+        except MyUser.DoesNotExist:
+            messages.error(request, 'Email/registration number does not exist!')
+            return redirect('accounts:login')
+
+        if user is not None:
+            authenticated_user = authenticate(request, email=user.email, password=password)
+            if authenticated_user is not None:
+                login(request, authenticated_user)
+                # messages.success(request, 'Logged in successfully')
+                if user.role == "Student":
+                    return redirect('/home/student/#D0')
+                elif user.role == "Chairperson":
+                    return redirect('/home/chair/#D0')
+                else:
+                    messages.error("Invalid role")
+                    return redirect(reverse('accounts:login'))
+            else:
+                messages.error(request, 'Incorrect password or account is not activated')
+                return redirect(reverse('accounts:login'))
+
+    return render(request, 'accounts/login.html')
 
 #forgot password functionality
 def forgot_password(request):
@@ -95,20 +129,7 @@ def forgot_password(request):
     else:  
         return HttpResponse('Activation link is invalid!')'''
     
-
-#display homepage  
-'''def home(request):
-    rooms = Rooms.objects.filter(booked=False).order_by('?')[:3]
-    is_must = True
-    
-    
-    context = {
-        'rooms' : rooms,
-        'must' : is_must,
-    }
-    return render(request, 'app/index.html', context)'''
   
-
 #change password functionality
 @login_required
 def changePassword(request):
@@ -139,50 +160,6 @@ def changePassword(request):
             
     return render(request, 'accounts/changepassword.html',)
 
-#login user 
-def login_user(request):
-    users = MyUser.objects.all()
-    # print(users)
-    if request.user.is_authenticated:
-        if request.user.role == "Student":
-            return redirect('services:homepage', type='student')
-        elif request.user.role == "Chairperson":
-            return redirect('services:homepage', type='chair')
-    
-    user = ''
-    if request.method == 'POST':
-        if 'students' in request.POST:
-            email = request.POST.get('email')
-            reg_no = request.POST.get('reg_no')
-            password = request.POST.get('password')
-            try:
-                user = MyUser.objects.get(email=email, reg_no=reg_no)
-            except MyUser.DoesNotExist:
-                messages.error(request, 'Email/registration number does not exist!')
-                return redirect('accounts:login')
-        elif 'chair' in request.POST:
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            try:
-                user = MyUser.objects.get(email=email)
-            except MyUser.DoesNotExist:
-                messages.error(request, 'Email does not exist!')
-                return redirect('accounts:login')
-
-        if user is not None:
-            authenticated_user = authenticate(request, email=user.email, password=password)
-            if authenticated_user is not None:
-                login(request, authenticated_user)
-                messages.success(request, 'Logged in successfully')
-                if 'students' in request.POST:
-                    return redirect('/home/student/#D0')
-                if 'chair' in request.POST:
-                    return redirect('/home/chair/#D0')
-            else:
-                messages.error(request, 'Incorrect password or account is not activated')
-                return redirect(reverse('accounts:login'))
-
-    return render(request, 'accounts/login.html',)
 
 
 #logout the logged in user   
